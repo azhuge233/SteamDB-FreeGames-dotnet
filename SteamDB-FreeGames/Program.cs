@@ -22,7 +22,7 @@ namespace SteamDB_FreeGames {
 							msg: msg,
 							htmlMode: true
 						);
-						Thread.Sleep(2000);
+						Thread.Sleep(2500);
 					}
 				}
 			}
@@ -45,15 +45,17 @@ namespace SteamDB_FreeGames {
 				var apps = htmlDoc.DocumentNode.CssSelect("table tr.app"); //find all free games
 				foreach (var each in apps) {
 					var tds = each.CssSelect("td").ToArray();
-					if (tds[2].InnerHtml.ToString() != "Weekend") {
+					var tdLen = tds.Count(); //steamDB added an extra column with an intall button
 
-						//start gather free game basic info
-						string subID = tds[1].SelectSingleNode(".//a[@href]").Attributes["href"].Value.Split('/')[2];
-						string gameName = tds[1].SelectSingleNode(".//b").InnerText;
-						string gameURL = tds[0].SelectSingleNode(".//a[@href]").Attributes["href"].Value.Split('?')[0];
-						DateTime startTime = DateTime.ParseExact(tds[3].Attributes["title"].Value.ToString(), "d MMMM yyyy – HH:mm:ss UTC", System.Globalization.CultureInfo.InvariantCulture).AddHours(8);
-						DateTime endTime = DateTime.ParseExact(tds[4].Attributes["title"].Value.ToString(), "d MMMM yyyy – HH:mm:ss UTC", System.Globalization.CultureInfo.InvariantCulture).AddHours(8);
+					//start gather free game basic info
+					string subID = tds[1].SelectSingleNode(".//a[@href]").Attributes["href"].Value.Split('/')[2];
+					string gameName = tds[1].SelectSingleNode(".//b").InnerText;
+					string gameURL = tds[0].SelectSingleNode(".//a[@href]").Attributes["href"].Value.Split('?')[0];
+					string freeType = tdLen == 5 ? tds[2].InnerHtml.ToString() : tds[3].InnerHtml.ToString(); //steamDB added an extra column with an intall button
+					DateTime startTime = DateTime.ParseExact(tdLen == 5 ? tds[3].Attributes["title"].Value.ToString() : tds[4].Attributes["title"].Value.ToString(), "d MMMM yyyy – HH:mm:ss UTC", System.Globalization.CultureInfo.InvariantCulture).AddHours(8); //steamDB added an extra column with an intall button
+					DateTime endTime = DateTime.ParseExact(tdLen == 5 ? tds[4].Attributes["title"].Value.ToString() : tds[5].Attributes["title"].Value.ToString(), "d MMMM yyyy – HH:mm:ss UTC", System.Globalization.CultureInfo.InvariantCulture).AddHours(8); //steamDB added an extra column with an intall button
 
+					if (freeType != "Weekend") {
 						//add game info to recordList
 						var tmpDic = new Dictionary<string, string> {
 							["Name"] = gameName,
