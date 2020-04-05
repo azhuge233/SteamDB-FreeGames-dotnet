@@ -1,6 +1,7 @@
 ﻿using System;
 using OpenQA.Selenium.Chrome;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace SteamDB_FreeGames {
 	public class GetSourceClass: IDisposable {

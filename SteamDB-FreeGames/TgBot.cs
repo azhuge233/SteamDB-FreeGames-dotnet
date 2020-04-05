@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Threading;
+using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -13,7 +13,7 @@ namespace SteamDB_FreeGames {
 			this.BotClient = new TelegramBotClient(token: token);
 		}
 
-		public async void SendMessage(string chatId, string msg, bool htmlMode = false) {
+		public async Task SendMessage(string chatId, string msg, bool htmlMode = false) {
 			if (msg != string.Empty) {
 				await BotClient.SendTextMessageAsync(
 					chatId: chatId,
