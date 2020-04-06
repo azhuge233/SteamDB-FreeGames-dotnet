@@ -25,6 +25,7 @@ namespace SteamDB_FreeGames {
 				} catch (Exception e) {
 					Console.WriteLine("\nError loading config file !");
 					Console.WriteLine("Error message: {0}", e.Message);
+					throw e;
 				}
 
 				using (var myBot = new TgBot(config["TOKEN"])) {
@@ -48,12 +49,14 @@ namespace SteamDB_FreeGames {
 			using (var jsonOp = new JsonOP()) {
 				var records = new List<Dictionary<string, string>>();
 				try {
+					Console.WriteLine("Loading previous records...");
 					records = jsonOp.LoadData(recordPath);// load previous free game info
 				} catch (Exception e) {
 					Console.WriteLine("\nError loading previous records !");
-					Console.WriteLine("Error message: {0}", e.Message);
+					Console.WriteLine("Error message: {0}\n", e.Message);
+					throw e;
 				}
-				var htmlDoc = new HtmlDocument();
+				var htmlDoc = new HtmlDocument(); 
 
 				Console.WriteLine("Getting page source...");
 				try {
@@ -65,7 +68,8 @@ namespace SteamDB_FreeGames {
 					}
 				} catch (Exception e) {
 					Console.WriteLine("\nError getting page source !");
-					Console.WriteLine("Error message: {0}", e.Message);
+					Console.WriteLine("Error message: {0}\n", e.Message);
+					throw e;
 				}
 
 				Console.WriteLine("Finding free games...\n");
@@ -104,7 +108,7 @@ namespace SteamDB_FreeGames {
 						}
 
 						if (is_push) { //the game is not in the previous record(a new game)
-									   //try to get game name on Steam page 
+							//try to get game name on Steam page 
 							var browser = new ScrapingBrowser();
 							WebPage page = browser.NavigateToPage(new Uri(gameURL));
 							var tmpDoc = new HtmlDocument();
@@ -125,23 +129,13 @@ namespace SteamDB_FreeGames {
 					}
 				}
 
-				try {
-					Console.WriteLine("\nWriting record...");
-					await jsonOp.WriteData(recordList, recordPath); //write new record
-				} catch (Exception e) {
-					Console.WriteLine("\nError writing records !");
-					Console.WriteLine("Error message: {0}", e.Message);
-				}
+				Console.WriteLine("\nWriting record...");
+				//write new record
+				jsonOp.WriteData(recordList, recordPath);
 			}
-
 			Console.WriteLine("Sending notification...");
-			try {
-				await SendNotification(pushList);
-				Console.WriteLine("Task done!");
-			} catch (Exception e) {
-				Console.WriteLine("\nError sending notifications !");
-				Console.WriteLine("Error message: {0}", e.Message);
-			}
+			await SendNotification(pushList);
+			Console.WriteLine("Task done!");
 		}
 	}
 }

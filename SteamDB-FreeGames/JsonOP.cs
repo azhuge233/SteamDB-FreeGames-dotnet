@@ -8,12 +8,10 @@ using Newtonsoft.Json;
 namespace SteamDB_FreeGames {
 	public class JsonOP: IDisposable {
 
-		public async Task WriteData(List<Dictionary<string, string>> data, string path) {
+		public void WriteData(List<Dictionary<string, string>> data, string path) {
 			string json = JsonConvert.SerializeObject(data, Formatting.Indented);
-			await Task.Run(() => {
-				File.WriteAllText(path, string.Empty);
-				File.WriteAllText(path, json);
-			});
+			File.WriteAllText(path, string.Empty);
+			File.WriteAllText(path, json);
 		}
 
 		public List<Dictionary<string, string>> LoadData(string path) {
