@@ -129,9 +129,13 @@ namespace SteamDB_FreeGames {
 					}
 				}
 
-				Console.WriteLine("\nWriting record...");
+				Console.WriteLine("\nWriting records...");
 				//write new record
-				jsonOp.WriteData(recordList, recordPath);
+				if (recordList.Count > 0) {
+					jsonOp.WriteData(recordList, recordPath);
+					Console.WriteLine("Done writing records !");
+				} else
+					Console.WriteLine("No records detected, quit writing records...");
 			}
 			Console.WriteLine("Sending notification...");
 			await SendNotification(pushList);
