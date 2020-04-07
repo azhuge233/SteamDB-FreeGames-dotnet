@@ -10,7 +10,19 @@
 ### Command
 
 ```
-dotnet publish -c Release -o /your/path/here -r win10-x64/osx-x64/linux-x64
+dotnet publish -c Release -o /your/path/here -r [win10-x64/osx-x64/linux-x64]
+```
+
+publish as a single file
+
+```
+dotnet publish -c Release -o /your/path/here -r [win10-x64/osx-x64/linux-x64] -p:PublishSingleFile=true
+```
+
+and enable compression if you want to
+
+```
+dotnet publish -c Release -o /your/path/here -r [win10-x64/osx-x64/linux-x64] -p:PublishSingleFile=true -p:PublishTrimmed=true
 ```
 
 ## Usage
