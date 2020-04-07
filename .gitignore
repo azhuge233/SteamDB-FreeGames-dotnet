@@ -351,3 +351,5 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+SteamDB-FreeGames/Properties/.DS_Store
+.DS_Store
