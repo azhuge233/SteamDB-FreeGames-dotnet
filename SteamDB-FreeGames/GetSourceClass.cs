@@ -12,11 +12,13 @@ namespace SteamDB_FreeGames {
 			chromeOptions.AddArgument("--disable-dev-shm-usage");
 			chromeOptions.AddUserProfilePreference("profile.managed_default_content_settings.images", 2);
 
-			var mychrome = new ChromeDriver(chromeOptions);
-			mychrome.Navigate().GoToUrl(url);
-			Thread.Sleep(8000);
-			var source = mychrome.PageSource;
-			mychrome.Quit();
+			var source = "";
+			using (var mychrome = new ChromeDriver(chromeOptions)) {
+				mychrome.Navigate().GoToUrl(url);
+				Thread.Sleep(8000);
+				source = mychrome.PageSource;
+				mychrome.Quit();
+			}
 
 			return source;
 		}
