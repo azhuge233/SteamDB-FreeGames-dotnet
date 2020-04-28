@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text;
 using HtmlAgilityPack;
 using ScrapySharp.Network;
 using ScrapySharp.Extensions;
@@ -109,7 +110,7 @@ namespace SteamDB_FreeGames {
 
 						if (is_push) { //the game is not in the previous record(a new game)
 							//try to get game name on Steam page 
-							var browser = new ScrapingBrowser();
+							var browser = new ScrapingBrowser() { Encoding = Encoding.UTF8 };
 							WebPage page = browser.NavigateToPage(new Uri(gameURL));
 							var tmpDoc = new HtmlDocument();
 							tmpDoc.LoadHtml(page.Content);
