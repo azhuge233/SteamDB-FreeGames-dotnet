@@ -9,9 +9,9 @@ using ScrapySharp.Extensions;
 
 namespace SteamDB_FreeGames {
 	class Program {
-		private static string SteamDBUrl = "https://steamdb.info/upcoming/free/";
-		private static string configPath = "config.json";
-		private static string recordPath = "record.json";
+		private static readonly string SteamDBUrl = "https://steamdb.info/upcoming/free/";
+		private static readonly string configPath = "config.json";
+		private static readonly string recordPath = "record.json";
 
 		static async Task SendNotification(List<string> msgs) {
 			if (msgs.Count() == 0) {
@@ -19,27 +19,25 @@ namespace SteamDB_FreeGames {
 				return ;
 			}
 
-			using (var jsonOp = new JsonOP()) {
-				var config = new Dictionary<string, string>();
-				try {
-					config = jsonOp.LoadConfig(path: configPath);
-				} catch (Exception e) {
-					Console.WriteLine("\nError loading config file !");
-					Console.WriteLine("Error message: {0}", e.Message);
-					throw e;
-				}
+			using var jsonOp = new JsonOP();
+			var config = new Dictionary<string, string>();
+			try {
+				config = jsonOp.LoadConfig(path: configPath);
+			} catch (Exception e) {
+				Console.WriteLine("\nError loading config file !");
+				Console.WriteLine("Error message: {0}", e.Message);
+				throw e;
+			}
 
-				using (var myBot = new TgBot(config["TOKEN"])) {
-					int count = 1;
-					foreach (var msg in msgs) {
-						Console.WriteLine("Sending Message {0}", count++);
-						await myBot.SendMessage(
-							chatId: config["CHAT_ID"],
-							msg: msg,
-							htmlMode: true
-						);
-					}
-				}
+			using var myBot = new TgBot(config["TOKEN"]);
+			int count = 1;
+			foreach (var msg in msgs) {
+				Console.WriteLine("Sending Message {0}", count++);
+				await myBot.SendMessage(
+					chatId: config["CHAT_ID"],
+					msg: msg,
+					htmlMode: true
+				);
 			}
 		}
 
@@ -61,12 +59,11 @@ namespace SteamDB_FreeGames {
 
 				Console.WriteLine("Getting page source...");
 				try {
-					using (var getSource = new GetSourceClass()) {
-						// selenium get page source
-						var html = getSource.getSource(SteamDBUrl);
-						// parse source string to HtmlAgilityPack
-						htmlDoc.LoadHtml(html);
-					}
+					using var getSource = new GetSourceClass();
+					// selenium get page source
+					var html = getSource.getSource(SteamDBUrl);
+					// parse source string to HtmlAgilityPack
+					htmlDoc.LoadHtml(html);
 				} catch (Exception e) {
 					Console.WriteLine("\nError getting page source !");
 					Console.WriteLine("Error message: {0}\n", e.Message);
