@@ -1,11 +1,13 @@
 # SteamDB-FreeGames-dotnet
  [SteamDB-FreeGames](https://github.com/azhuge233/SteamDB-FreeGames) dotnet core version
 
-## Build
-
-### Requirements
+##Requirements
 
 - dotnet core 3.1
+- 2captcha account
+  - SteamDB now with hcaptcha, the program is using 2captcha to bypass it.
+
+##Build
 
 ### Command
 
@@ -27,22 +29,23 @@ dotnet publish -c Release -o /your/path/here -r [win10-x64/osx-x64/linux-x64] -p
 
 ## Usage
 
-Before use, please follow these steps:
+Before executing the binary file, please follow these steps:
 
-1. Create a config.json file and a record.json file in the directory.
+1. Create a config.json file and a record.json file in the same directory.
 
-2. Add these two fields in config.json file:
+2. Add these variables in config.json file
 
    ```json
    {
    	"TOKEN": "",
-   	"CHAT_ID": ""
+   	"CHAT_ID": "",
+     "API_KEY": ""
    }
    ```
 
-   Then fill your Telegram Bot token and your account's Chat ID.
+   Then fill your Telegram Bot token, your account's Chat ID and your 2captcha API key.
 
 3. Add a "[]"(empty bracket, as a empty list in json format) in record.json file, otherwise the program will throw a null object error.
 
-Tested on Windows Server 2016, macOS Catalina 10.15.4.
+Tested on Windows Server 2016, macOS Catalina 10.15.6.
 
