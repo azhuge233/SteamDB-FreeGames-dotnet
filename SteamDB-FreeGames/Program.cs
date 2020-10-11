@@ -1,143 +1,272 @@
 ﻿using System;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
-using System.Text;
 using HtmlAgilityPack;
 using ScrapySharp.Network;
 using ScrapySharp.Extensions;
+using TwoCaptcha.Captcha;
+using OpenQA.Selenium.Chrome;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace SteamDB_FreeGames {
 	class Program {
-		private static readonly string SteamDBUrl = "https://steamdb.info/upcoming/free/";
-		private static readonly string configPath = "config.json";
-		private static readonly string recordPath = "record.json";
+		#region DI variables
+		private readonly ILogger _logger;
+		#endregion
 
-		static async Task SendNotification(List<string> msgs) {
+		#region global readonly variables
+		private readonly string SteamDBUrl = "https://steamdb.info/upcoming/free/";
+		private readonly string configPath = "config.json";
+		private readonly string recordPath = "record.json";
+		private readonly int firstDelay = 10000;
+		private readonly int secondDelay = 5000;
+		private readonly string submitFunc = @"window.submitToken = function(token) {
+				document.querySelector('[name=g-recaptcha-response]').innerText = token;
+				document.querySelector('[name=h-captcha-response]').innerText = token;
+				document.querySelector('.challenge-form').submit();
+			}";
+		#endregion
+
+		public Program(ILogger<Program> logger) {
+			_logger = logger;
+		}
+
+		private static void ConfigureServices(ServiceCollection services) {
+			services.AddLogging(logging => {
+				//logging.AddFilter("Program", LogLevel.Debug);
+				logging.AddFilter("System", LogLevel.Warning);
+				logging.AddFilter("Microsoft", LogLevel.Warning);
+				logging.AddConsole();
+			}).AddTransient<Program>();
+		}
+
+		internal ChromeDriver CreateDriver() {
+			ChromeDriverService service = ChromeDriverService.CreateDefaultService();
+			service.SuppressInitialDiagnosticInformation = true;
+			var chromeOptions = new ChromeOptions();
+			chromeOptions.AddArgument("--no-sandbox");
+			chromeOptions.AddArgument("--disable-dev-shm-usage");
+			var mychrome = new ChromeDriver(service, chromeOptions);
+			return mychrome;
+		}
+
+		internal async Task SendNotification(string id, string token, List<string> msgs) {
 			if (msgs.Count() == 0) {
-				Console.WriteLine("No new notifications !");
-				return ;
+				_logger.LogDebug("No new notifications !");
+				return;
 			}
 
-			using var jsonOp = new JsonOP();
-			var config = new Dictionary<string, string>();
-			try {
-				config = jsonOp.LoadConfig(path: configPath);
-			} catch (Exception e) {
-				Console.WriteLine("\nError loading config file !");
-				Console.WriteLine("Error message: {0}", e.Message);
-				throw e;
-			}
-
-			using var myBot = new TgBot(config["TOKEN"]);
+			using var myBot = new TgBot(token);
 			int count = 1;
 			foreach (var msg in msgs) {
-				Console.WriteLine("Sending Message {0}", count++);
+				_logger.LogDebug("Sending Message {0}", count++);
 				await myBot.SendMessage(
-					chatId: config["CHAT_ID"],
+					chatId: id,
 					msg: msg,
 					htmlMode: true
 				);
 			}
 		}
 
-		static async Task Main() {
+		internal string SolvCapcha(string apiKey, string siteKey) {
+			TwoCaptcha.TwoCaptcha solver = new TwoCaptcha.TwoCaptcha(apiKey);
+
+			HCaptcha hCaptcha = new HCaptcha();
+			hCaptcha.SetSiteKey(siteKey);
+			hCaptcha.SetUrl(SteamDBUrl);
+
+			try {
+				solver.Solve(hCaptcha).Wait();
+			} catch (AggregateException ex) {
+				_logger.LogError("Solve Captcha Error: " + ex.InnerExceptions.First().Message);
+			}
+
+			return hCaptcha.Code;
+		}
+
+		internal string GetSiteKey(string source) {
+			var htmlDoc = new HtmlDocument();
+			htmlDoc.LoadHtml(source);
+			var iframe = htmlDoc.DocumentNode.CssSelect("iframe");
+			var src = iframe.First().GetAttributeValue("src");
+			var siteKey = src.Split("sitekey=")[1];
+
+			return siteKey;
+		}
+
+		internal async Task StartProcess(HtmlDocument htmlDoc, List<Dictionary<string, string>> records,
+										string chat_id, string token) {
+			#region useful variables
 			var pushList = new List<string>();
 			var recordList = new List<Dictionary<string, string>>();
+			#endregion
 
-			using (var jsonOp = new JsonOP()) {
-				var records = new List<Dictionary<string, string>>();
-				try {
-					Console.WriteLine("Loading previous records...");
-					records = jsonOp.LoadData(recordPath);// load previous free game info
-				} catch (Exception e) {
-					Console.WriteLine("\nError loading previous records !");
-					Console.WriteLine("Error message: {0}\n", e.Message);
-					throw e;
-				}
-				var htmlDoc = new HtmlDocument(); 
+			#region data processing
+			var apps = htmlDoc.DocumentNode.CssSelect("table tr.app"); //find all free games
+			foreach (var each in apps) {
+				var tds = each.CssSelect("td").ToArray();
+				var tdLen = tds.Count(); //steamDB added an extra column with a intall button
 
-				Console.WriteLine("Getting page source...");
-				try {
-					using var getSource = new GetSourceClass();
-					// selenium get page source
-					var html = getSource.getSource(SteamDBUrl);
-					// parse source string to HtmlAgilityPack
-					htmlDoc.LoadHtml(html);
-				} catch (Exception e) {
-					Console.WriteLine("\nError getting page source !");
-					Console.WriteLine("Error message: {0}\n", e.Message);
-					throw e;
-				}
+				//start gather free game basic info
+				string subID = tds[1].SelectSingleNode(".//a[@href]").Attributes["href"].Value.Split('/')[2];
+				string gameName = tds[1].SelectSingleNode(".//b").InnerText;
+				string gameURL = tds[0].SelectSingleNode(".//a[@href]").Attributes["href"].Value.Split('?')[0];
+				string freeType = tdLen == 5 ? tds[2].InnerHtml.ToString() : tds[3].InnerHtml.ToString(); //steamDB added an extra column with a intall button
+				DateTime startTime = DateTime.ParseExact(tdLen == 5 ? tds[3].Attributes["title"].Value.ToString() : tds[4].Attributes["title"].Value.ToString(), "d MMMM yyyy – HH:mm:ss UTC", System.Globalization.CultureInfo.InvariantCulture).AddHours(8); //steamDB added an extra column with a intall button
+				DateTime endTime = DateTime.ParseExact(tdLen == 5 ? tds[4].Attributes["title"].Value.ToString() : tds[5].Attributes["title"].Value.ToString(), "d MMMM yyyy – HH:mm:ss UTC", System.Globalization.CultureInfo.InvariantCulture).AddHours(8); //steamDB added an extra column with a intall button
 
-				Console.WriteLine("Finding free games...\n");
-				var apps = htmlDoc.DocumentNode.CssSelect("table tr.app"); //find all free games
-				foreach (var each in apps) {
-					var tds = each.CssSelect("td").ToArray();
-					var tdLen = tds.Count(); //steamDB added an extra column with a intall button
+				if (freeType != "Weekend") {
+					_logger.LogDebug("Found free game: {0}", gameName);
+					//add game info to recordList
+					var tmpDic = new Dictionary<string, string> {
+						["Name"] = gameName,
+						["SubID"] = subID,
+						["URL"] = gameURL,
+						["StartTime"] = startTime.ToString(),
+						["EndTime"] = endTime.ToString()
+					};
+					recordList.Add(tmpDic);
 
-					//start gather free game basic info
-					string subID = tds[1].SelectSingleNode(".//a[@href]").Attributes["href"].Value.Split('/')[2];
-					string gameName = tds[1].SelectSingleNode(".//b").InnerText;
-					string gameURL = tds[0].SelectSingleNode(".//a[@href]").Attributes["href"].Value.Split('?')[0];
-					string freeType = tdLen == 5 ? tds[2].InnerHtml.ToString() : tds[3].InnerHtml.ToString(); //steamDB added an extra column with a intall button
-					DateTime startTime = DateTime.ParseExact(tdLen == 5 ? tds[3].Attributes["title"].Value.ToString() : tds[4].Attributes["title"].Value.ToString(), "d MMMM yyyy – HH:mm:ss UTC", System.Globalization.CultureInfo.InvariantCulture).AddHours(8); //steamDB added an extra column with a intall button
-					DateTime endTime = DateTime.ParseExact(tdLen == 5 ? tds[4].Attributes["title"].Value.ToString() : tds[5].Attributes["title"].Value.ToString(), "d MMMM yyyy – HH:mm:ss UTC", System.Globalization.CultureInfo.InvariantCulture).AddHours(8); //steamDB added an extra column with a intall button
-
-					if (freeType != "Weekend") {
-						Console.WriteLine("Found free game: {0}", gameName);
-						//add game info to recordList
-						var tmpDic = new Dictionary<string, string> {
-							["Name"] = gameName,
-							["SubID"] = subID,
-							["URL"] = gameURL,
-							["StartTime"] = startTime.ToString(),
-							["EndTime"] = endTime.ToString()
-						};
-						recordList.Add(tmpDic);
-
-						//decide to send notification
-						bool is_push = true;
-						foreach (var record in records) {
-							if (record["SubID"] == subID) {
-								is_push = false;
-								break;
-							}
-						}
-
-						if (is_push) { //the game is not in the previous record(a new game)
-							//try to get game name on Steam page 
-							var browser = new ScrapingBrowser() { Encoding = Encoding.UTF8 };
-							WebPage page = browser.NavigateToPage(new Uri(gameURL));
-							var tmpDoc = new HtmlDocument();
-							tmpDoc.LoadHtml(page.Content);
-							var steamName = tmpDoc.DocumentNode.CssSelect("div.apphub_AppName").ToArray();
-							if (steamName.Count() > 0)
-								gameName = steamName[0].InnerText;
-
-							string pushMessage = "<b>" + gameName + "</b> \n\n";
-							pushMessage += "Sub ID: <i>" + subID + "</i> \n";
-							pushMessage += "链接: <a href=\"" + gameURL + "\" >" + gameName + "</a>\n";
-							pushMessage += "开始时间: " + startTime.ToString() + "\n";
-							pushMessage += "结束时间: " + endTime.ToString() + "\n";
-
-							pushList.Add(pushMessage);
-							Console.WriteLine("Added game {0} in push list", gameName);
+					//decide to send notification
+					bool is_push = true;
+					foreach (var record in records) {
+						if (record["SubID"] == subID) {
+							is_push = false;
+							break;
 						}
 					}
-				}
 
-				Console.WriteLine("\nWriting records...");
-				//write new record
+					if (is_push) { //the game is not in the previous record(a new game)
+								   //try to get game name on Steam page 
+						var browser = new ScrapingBrowser() { Encoding = Encoding.UTF8 };
+						WebPage page = browser.NavigateToPage(new Uri(gameURL));
+						var tmpDoc = new HtmlDocument();
+						tmpDoc.LoadHtml(page.Content);
+						var steamName = tmpDoc.DocumentNode.CssSelect("div.apphub_AppName").ToArray();
+						if (steamName.Count() > 0)
+							gameName = steamName[0].InnerText;
+
+						string pushMessage = "<b>" + gameName + "</b> \n\n";
+						pushMessage += "Sub ID: <i>" + subID + "</i> \n";
+						pushMessage += "链接: <a href=\"" + gameURL + "\" >" + gameName + "</a>\n";
+						pushMessage += "开始时间: " + startTime.ToString() + "\n";
+						pushMessage += "结束时间: " + endTime.ToString() + "\n";
+
+						pushList.Add(pushMessage);
+						_logger.LogDebug("Added game {0} in push list", gameName);
+					}
+				}
+			}
+			#endregion
+
+			_logger.LogDebug("Writing records...");
+			#region write records
+			//write new record
+			using (var jsonOp = new JsonOP()) {
 				if (recordList.Count > 0) {
 					jsonOp.WriteData(recordList, recordPath);
-					Console.WriteLine("Done writing records !");
+					_logger.LogDebug("Done writing records !");
 				} else
-					Console.WriteLine("No records detected, quit writing records...");
+					_logger.LogDebug("No records detected, quit writing records...");
 			}
-			Console.WriteLine("Sending notification...");
-			await SendNotification(pushList);
-			Console.WriteLine("Task done!");
+			#endregion
+
+			_logger.LogDebug("Sending notification...");
+			#region send notifications
+			await SendNotification(id: chat_id, token: token, msgs: pushList);
+			#endregion
+		}
+
+		internal async Task Run() {
+			_logger.LogInformation(DateTime.Now.ToString() + " - Start Job -");
+			#region previous records and config file
+			var records = new List<Dictionary<string, string>>();
+			var config = new Dictionary<string, string>();
+			#endregion
+
+			using (var jsonOp = new JsonOP()) {
+
+				_logger.LogInformation("Loading previous records...");
+				#region load previous records
+				try {
+					records = jsonOp.LoadData(recordPath);// load previous free game info
+				} catch (Exception e) {
+					_logger.LogError("Error loading previous records !");
+					_logger.LogError("Error message: { 0}\n", e.Message);
+				}
+				#endregion
+
+				_logger.LogInformation("Loading configurations...");
+				#region load config
+				try {
+					config = jsonOp.LoadConfig(path: configPath);
+				} catch (Exception e) {
+					_logger.LogError("Error loading config file !");
+					_logger.LogError("Error message: {0}", e.Message);
+				}
+				#endregion
+			}
+
+			var mychrome = CreateDriver();
+
+			#region open page, encounter hcaptcha
+			mychrome.Navigate().GoToUrl(SteamDBUrl);
+			Thread.Sleep(firstDelay);
+			#endregion
+
+			_logger.LogInformation("Getting sitekey...");
+			#region get siteKey
+			var siteKey = string.Empty;
+			try {
+				siteKey = GetSiteKey(mychrome.PageSource);
+			} catch (Exception ex) {
+				_logger.LogError("Getting siteKey error: {0}", ex.Message);
+				return;
+			}
+			#endregion
+
+			_logger.LogInformation("Getting token...");
+			#region get token
+			var token = SolvCapcha(apiKey: config["API_KEY"], siteKey: siteKey);
+			#endregion
+
+			_logger.LogInformation("Submitting token...");
+			#region submit token and get the real page
+			mychrome.ExecuteScript(submitFunc);
+			mychrome.ExecuteScript("submitToken('" + token + "')");
+			Thread.Sleep(secondDelay);
+			#endregion
+			_logger.LogInformation("Successfully bypassed captcha.");
+
+			_logger.LogInformation("Getting page source...");
+			#region convert page source to HtmlDocument format
+			var htmlDoc = new HtmlDocument();
+			htmlDoc.LoadHtml(mychrome.PageSource);
+			#endregion
+
+			mychrome.Quit();
+
+			_logger.LogInformation("Start data processing...");
+			#region start processing data
+			await StartProcess(htmlDoc: htmlDoc, records: records, chat_id: config["CHAT_ID"], token: config["TOKEN"]);
+			#endregion
+
+			_logger.LogInformation(DateTime.Now.ToString() + " - End Job -");
+		}
+
+		static async Task Main() {
+			#region config service
+			var services = new ServiceCollection();
+			ConfigureServices(services);
+			using (ServiceProvider serviceProvider = services.BuildServiceProvider()) {
+				Program app = serviceProvider.GetService<Program>();
+				await app.Run();
+			}
+			#endregion
 		}
 	}
 }
