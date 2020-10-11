@@ -41,7 +41,7 @@ Before executing the binary file, please follow these steps:
    {
    	"TOKEN": "",
    	"CHAT_ID": "",
-     "API_KEY": ""
+   	"API_KEY": ""
    }
    ```
 
