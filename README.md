@@ -45,7 +45,7 @@ Before executing the binary file, please follow these steps:
    ```
    
 
-Then fill your Telegram Bot token, your account's Chat ID and your 2captcha API key.
+Then fill your Telegram Bot token and your account's Chat ID.
 
 3. Add a "[]"(empty bracket, as a empty list in json format) in record.json file, otherwise the program will throw a null object error.
 4. Download chromedirver.exe file in the repo, and place it in your PATH directory. 
