@@ -1,7 +1,7 @@
 # SteamDB-FreeGames-dotnet
  [SteamDB-FreeGames](https://github.com/azhuge233/SteamDB-FreeGames) dotnet core version
 
-### Note that this project is no longer usable, but I may update it once it's achieveable. Read more abhout this at [python version readme](https://github.com/azhuge233/SteamDB-FreeGames).
+### Python version now uses undetected_chromedriver to bypass cloudflare's new anti-bot page, but I haven't found a same package in C#, I will update this dotnet version ASAP.
 
 ##Requirements
 
