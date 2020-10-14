@@ -38,13 +38,12 @@ Before executing the binary file, please follow these steps:
    ```json
    {
    	"TOKEN": "",
-   	"CHAT_ID": "",
-   	"API_KEY": ""
+   	"CHAT_ID": ""
    }
    ```
-
-   Then fill your Telegram Bot token, your account's Chat ID and your 2captcha API key.
-
+   
+Then fill your Telegram Bot token, your account's Chat ID and your 2captcha API key.
+   
 3. Add a "[]"(empty bracket, as a empty list in json format) in record.json file, otherwise the program will throw a null object error.
 
 Tested on Windows Server 2016, macOS Catalina 10.15.6.
