@@ -6,8 +6,6 @@
 ##Requirements
 
 - dotnet core 3.1
-- 2captcha account
-  - SteamDB now with hcaptcha, the program is using 2captcha to bypass it.
 
 ##Build
 
