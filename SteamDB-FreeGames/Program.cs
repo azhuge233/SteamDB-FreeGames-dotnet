@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using HtmlAgilityPack;
 using ScrapySharp.Network;
 using ScrapySharp.Extensions;
-using TwoCaptcha.Captcha;
 using OpenQA.Selenium.Chrome;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
