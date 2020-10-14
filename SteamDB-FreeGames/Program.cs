@@ -22,13 +22,7 @@ namespace SteamDB_FreeGames {
 		private readonly string SteamDBUrl = "https://steamdb.info/upcoming/free/";
 		private readonly string configPath = "config.json";
 		private readonly string recordPath = "record.json";
-		private readonly int firstDelay = 10000;
-		private readonly int secondDelay = 5000;
-		private readonly string submitFunc = @"window.submitToken = function(token) {
-				document.querySelector('[name=g-recaptcha-response]').innerText = token;
-				document.querySelector('[name=h-captcha-response]').innerText = token;
-				document.querySelector('.challenge-form').submit();
-			}";
+		private readonly int firstDelay = 15000;
 		#endregion
 
 		public Program(ILogger<Program> logger) {
@@ -48,8 +42,8 @@ namespace SteamDB_FreeGames {
 			ChromeDriverService service = ChromeDriverService.CreateDefaultService();
 			service.SuppressInitialDiagnosticInformation = true;
 			var chromeOptions = new ChromeOptions();
-			chromeOptions.AddArgument("--no-sandbox");
-			chromeOptions.AddArgument("--disable-dev-shm-usage");
+			chromeOptions.AddArgument("start-maximized");
+			chromeOptions.AddArgument("--disable-blink-features=AutomationControlled");
 			var mychrome = new ChromeDriver(service, chromeOptions);
 			return mychrome;
 		}
@@ -70,32 +64,6 @@ namespace SteamDB_FreeGames {
 					htmlMode: true
 				);
 			}
-		}
-
-		internal string SolvCapcha(string apiKey, string siteKey) {
-			TwoCaptcha.TwoCaptcha solver = new TwoCaptcha.TwoCaptcha(apiKey);
-
-			HCaptcha hCaptcha = new HCaptcha();
-			hCaptcha.SetSiteKey(siteKey);
-			hCaptcha.SetUrl(SteamDBUrl);
-
-			try {
-				solver.Solve(hCaptcha).Wait();
-			} catch (AggregateException ex) {
-				_logger.LogError("Solve Captcha Error: " + ex.InnerExceptions.First().Message);
-			}
-
-			return hCaptcha.Code;
-		}
-
-		internal string GetSiteKey(string source) {
-			var htmlDoc = new HtmlDocument();
-			htmlDoc.LoadHtml(source);
-			var iframe = htmlDoc.DocumentNode.CssSelect("iframe");
-			var src = iframe.First().GetAttributeValue("src");
-			var siteKey = src.Split("sitekey=")[1];
-
-			return siteKey;
 		}
 
 		internal async Task StartProcess(HtmlDocument htmlDoc, List<Dictionary<string, string>> records,
@@ -213,47 +181,17 @@ namespace SteamDB_FreeGames {
 
 			var mychrome = CreateDriver();
 
-			#region open page, encounter hcaptcha
 			mychrome.Navigate().GoToUrl(SteamDBUrl);
 			Thread.Sleep(firstDelay);
-			#endregion
-
-			_logger.LogInformation("Getting sitekey...");
-			#region get siteKey
-			var siteKey = string.Empty;
-			try {
-				siteKey = GetSiteKey(mychrome.PageSource);
-			} catch (Exception ex) {
-				_logger.LogError("Getting siteKey error: {0}", ex.Message);
-				return;
-			}
-			#endregion
-
-			_logger.LogInformation("Getting token...");
-			#region get token
-			var token = SolvCapcha(apiKey: config["API_KEY"], siteKey: siteKey);
-			#endregion
-
-			_logger.LogInformation("Submitting token...");
-			#region submit token and get the real page
-			mychrome.ExecuteScript(submitFunc);
-			mychrome.ExecuteScript("submitToken('" + token + "')");
-			Thread.Sleep(secondDelay);
-			#endregion
-			_logger.LogInformation("Successfully bypassed captcha.");
 
 			_logger.LogInformation("Getting page source...");
-			#region convert page source to HtmlDocument format
 			var htmlDoc = new HtmlDocument();
 			htmlDoc.LoadHtml(mychrome.PageSource);
-			#endregion
 
 			mychrome.Quit();
 
 			_logger.LogInformation("Start data processing...");
-			#region start processing data
 			await StartProcess(htmlDoc: htmlDoc, records: records, chat_id: config["CHAT_ID"], token: config["TOKEN"]);
-			#endregion
 
 			_logger.LogInformation(DateTime.Now.ToString() + " - End Job -");
 		}
@@ -262,10 +200,9 @@ namespace SteamDB_FreeGames {
 			#region config service
 			var services = new ServiceCollection();
 			ConfigureServices(services);
-			using (ServiceProvider serviceProvider = services.BuildServiceProvider()) {
-				Program app = serviceProvider.GetService<Program>();
-				await app.Run();
-			}
+			using ServiceProvider serviceProvider = services.BuildServiceProvider();
+			Program app = serviceProvider.GetService<Program>();
+			await app.Run();
 			#endregion
 		}
 	}
