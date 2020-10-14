@@ -1,13 +1,15 @@
 # SteamDB-FreeGames-dotnet
  [SteamDB-FreeGames](https://github.com/azhuge233/SteamDB-FreeGames) dotnet core version
 
-### Python version now uses undetected_chromedriver to bypass cloudflare's new anti-bot page, but I haven't found a same package in C#, I will update this dotnet version ASAP.
+## How this works
 
-##Requirements
+In python version, I use undetected_chromedriver to guise selenium bot in order to bypass cloudflare's 5 secs anti-bot page. In C#, there's no similar package to do that, but instead of using undetected_chromedriver, I used the "hacked" chromedriver that undetected_chromedriver patched, then added two arguements and the whole thing works.
+
+## Requirements
 
 - dotnet core 3.1
 
-##Build
+## Build
 
 ### Command
 
@@ -42,9 +44,11 @@ Before executing the binary file, please follow these steps:
    }
    ```
    
+
 Then fill your Telegram Bot token, your account's Chat ID and your 2captcha API key.
-   
+
 3. Add a "[]"(empty bracket, as a empty list in json format) in record.json file, otherwise the program will throw a null object error.
+4. Download chromedirver.exe file in the repo, and place it in your PATH directory. 
 
 Tested on Windows Server 2016, macOS Catalina 10.15.6.
 
