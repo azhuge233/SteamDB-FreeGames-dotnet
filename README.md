@@ -5,6 +5,8 @@
 
 In python version, I use undetected_chromedriver to guise selenium bot in order to bypass cloudflare's 5 secs anti-bot page. In C#, there's no similar package to do that, but instead of using undetected_chromedriver, I used the "hacked" chromedriver that undetected_chromedriver patched, then added two arguements and the whole thing works.
 
+**Attention**: The anti-bot method upgraded again, this project is no longer working.
+
 ## Requirements
 
 - dotnet core 3.1
