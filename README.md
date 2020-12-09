@@ -5,7 +5,7 @@
 
 In python version, I use undetected_chromedriver to guise selenium bot in order to bypass cloudflare's 5 secs anti-bot page. In C#, there's no similar package to do that, but instead of using undetected_chromedriver, I used the "hacked" chromedriver that undetected_chromedriver patched, then added two arguements and the whole thing works.
 
-**Seems that SteamDB really don't want people scraping their site, this repo will trigger a SteamDB IP ban which was added recently.**
+**Seems that SteamDB really don't want people scraping their site.**
 
 ## Requirements
 
