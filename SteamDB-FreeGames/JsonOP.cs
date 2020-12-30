@@ -25,6 +25,8 @@ namespace SteamDB_FreeGames {
 			return JsonConvert.DeserializeObject<Dictionary<string, string>>(content);
 		}
 
-		public void Dispose() { }
+		public void Dispose() {
+			GC.SuppressFinalize(this);
+		}
 	}
 }
