@@ -75,6 +75,9 @@ namespace SteamDB_FreeGames {
 			#region data processing
 			var apps = htmlDoc.DocumentNode.CssSelect("table tr.app"); //find all free games
 			foreach (var each in apps) {
+				if (each.Attributes.HasKeyIgnoreCase("hidden")) //skip the hidden trap row
+					continue;
+
 				var tds = each.CssSelect("td").ToArray();
 				var tdLen = tds.Count(); //steamDB added an extra column with a intall button
 
