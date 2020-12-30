@@ -7,7 +7,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace SteamDB_FreeGames {
 	public class TgBot: IDisposable {
-		private TelegramBotClient BotClient;
+		private TelegramBotClient BotClient { get; set; }
 
 		public TgBot(string token) {
 			this.BotClient = new TelegramBotClient(token: token);
@@ -23,6 +23,8 @@ namespace SteamDB_FreeGames {
 			}
 		}
 
-		public void Dispose() { }
+		public void Dispose() {
+			GC.SuppressFinalize(this);
+		}
 	}
 }
