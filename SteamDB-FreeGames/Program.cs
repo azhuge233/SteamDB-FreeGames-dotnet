@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using HtmlAgilityPack;
 using ScrapySharp.Network;
 using ScrapySharp.Extensions;
-using OpenQA.Selenium.Chrome;
+using PlaywrightSharp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -21,7 +21,7 @@ namespace SteamDB_FreeGames {
 		private readonly string SteamDBUrl = "https://steamdb.info/upcoming/free/";
 		private readonly string configPath = "config.json";
 		private readonly string recordPath = "record.json";
-		private readonly int firstDelay = 15000;
+		private readonly int firstDelay = 10000;
 		#endregion
 
 		public Program(ILogger<Program> logger) {
@@ -33,35 +33,33 @@ namespace SteamDB_FreeGames {
 				//logging.AddFilter("Program", LogLevel.Debug);
 				logging.AddFilter("System", LogLevel.Warning);
 				logging.AddFilter("Microsoft", LogLevel.Warning);
-				logging.AddConsole();
+				logging.AddSimpleConsole(options => {
+					options.SingleLine = true;
+					options.TimestampFormat = "yyyy/MM/dd - HH:mm:ss ";
+				});
 			}).AddTransient<Program>();
 		}
 
-		internal ChromeDriver CreateDriver() {
-			ChromeDriverService service = ChromeDriverService.CreateDefaultService();
-			service.SuppressInitialDiagnosticInformation = true;
-			var chromeOptions = new ChromeOptions();
-			chromeOptions.AddArgument("start-maximized");
-			chromeOptions.AddArgument("--disable-blink-features=AutomationControlled");
-			var mychrome = new ChromeDriver(service, chromeOptions);
-			return mychrome;
-		}
-
 		internal async Task SendNotification(string id, string token, List<string> msgs) {
-			if (msgs.Count() == 0) {
-				_logger.LogDebug("No new notifications !");
+			if (msgs.Count == 0) {
+				_logger.LogInformation("No new notifications !");
 				return;
 			}
 
-			using var myBot = new TgBot(token);
-			int count = 1;
-			foreach (var msg in msgs) {
-				_logger.LogDebug("Sending Message {0}", count++);
-				await myBot.SendMessage(
-					chatId: id,
-					msg: msg,
-					htmlMode: true
-				);
+			try {
+				using var myBot = new TgBot(token);
+				int count = 1;
+				foreach (var msg in msgs) {
+					_logger.LogInformation("Sending Message {0}", count++);
+					await myBot.SendMessage(
+						chatId: id,
+						msg: msg,
+						htmlMode: true
+					);
+				}
+			} catch (Exception ex) {
+				_logger.LogError("Send Notification failed!");
+				_logger.LogError("Erro message: {0}", ex.Message);
 			}
 		}
 
@@ -79,7 +77,7 @@ namespace SteamDB_FreeGames {
 					continue;
 
 				var tds = each.CssSelect("td").ToArray();
-				var tdLen = tds.Count(); //steamDB added an extra column with a intall button
+				var tdLen = tds.Length; //steamDB added an extra column with a intall button
 
 				//start gather free game basic info
 				string subID = tds[1].SelectSingleNode(".//a[@href]").Attributes["href"].Value.Split('/')[2];
@@ -90,7 +88,7 @@ namespace SteamDB_FreeGames {
 				DateTime endTime = DateTime.ParseExact(tdLen == 5 ? tds[4].Attributes["title"].Value.ToString() : tds[5].Attributes["title"].Value.ToString(), "yyyy-MM-dTHH:mm:ss+00:00", System.Globalization.CultureInfo.InvariantCulture).AddHours(8); //steamDB added an extra column with a intall button
 
 				if (freeType != "Weekend") {
-					_logger.LogDebug("Found free game: {0}", gameName);
+					_logger.LogInformation("Found free game: {0}", gameName);
 					//add game info to recordList
 					var tmpDic = new Dictionary<string, string> {
 						["Name"] = gameName,
@@ -117,7 +115,7 @@ namespace SteamDB_FreeGames {
 						var tmpDoc = new HtmlDocument();
 						tmpDoc.LoadHtml(page.Content);
 						var steamName = tmpDoc.DocumentNode.CssSelect("div.apphub_AppName").ToArray();
-						if (steamName.Count() > 0)
+						if (steamName.Length > 0)
 							gameName = steamName[0].InnerText;
 
 						string pushMessage = "<b>" + gameName + "</b> \n\n";
@@ -127,13 +125,13 @@ namespace SteamDB_FreeGames {
 						pushMessage += "结束时间: " + endTime.ToString() + "\n";
 
 						pushList.Add(pushMessage);
-						_logger.LogDebug("Added game {0} in push list", gameName);
+						_logger.LogInformation("Added game {0} in push list", gameName);
 					}
 				}
 			}
 			#endregion
 
-			_logger.LogDebug("Writing records...");
+			_logger.LogInformation("Writing records...");
 			#region write records
 			//write new record
 			using (var jsonOp = new JsonOP()) {
@@ -145,14 +143,14 @@ namespace SteamDB_FreeGames {
 			}
 			#endregion
 
-			_logger.LogDebug("Sending notification...");
+			_logger.LogInformation("Sending notification...");
 			#region send notifications
 			await SendNotification(id: chat_id, token: token, msgs: pushList);
 			#endregion
 		}
 
 		internal async Task Run() {
-			_logger.LogInformation(DateTime.Now.ToString() + " - Start Job -");
+			_logger.LogInformation(" - Start Job -");
 			#region previous records and config file
 			var records = new List<Dictionary<string, string>>();
 			var config = new Dictionary<string, string>();
@@ -169,6 +167,7 @@ namespace SteamDB_FreeGames {
 					_logger.LogError("Error message: { 0}\n", e.Message);
 				}
 				#endregion
+				_logger.LogInformation("Done");
 
 				_logger.LogInformation("Loading configurations...");
 				#region load config
@@ -179,23 +178,36 @@ namespace SteamDB_FreeGames {
 					_logger.LogError("Error message: {0}", e.Message);
 				}
 				#endregion
+				_logger.LogInformation("Done");
 			}
-
-			var mychrome = CreateDriver();
-
-			mychrome.Navigate().GoToUrl(SteamDBUrl);
-			Thread.Sleep(firstDelay);
 
 			_logger.LogInformation("Getting page source...");
 			var htmlDoc = new HtmlDocument();
-			htmlDoc.LoadHtml(mychrome.PageSource);
+			#region playright varialbles
+			using var playwright = await Playwright.CreateAsync();
+			await using var browser = await playwright.Firefox.LaunchAsync(headless: true);
+			#endregion
 
-			mychrome.Quit();
+			#region load page
+			try {
+				var page = await browser.NewPageAsync();
+				await page.GoToAsync(SteamDBUrl);
+				Thread.Sleep(firstDelay);
+				htmlDoc.LoadHtml(await page.GetInnerHtmlAsync("*"));
+				_logger.LogInformation("Done");
+			} catch (Exception ex) {
+				_logger.LogError("Get source error!");
+				_logger.LogError("Error message: {0}", ex.Message);
+			} finally {
+				await browser.CloseAsync();
+			}
+			#endregion
 
 			_logger.LogInformation("Start data processing...");
 			await StartProcess(htmlDoc: htmlDoc, records: records, chat_id: config["CHAT_ID"], token: config["TOKEN"]);
+			_logger.LogInformation("Done");
 
-			_logger.LogInformation(DateTime.Now.ToString() + " - End Job -");
+			_logger.LogInformation(" - End Job -");
 		}
 
 		static async Task Main() {
