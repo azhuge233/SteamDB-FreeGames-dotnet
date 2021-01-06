@@ -19,7 +19,7 @@
 dotnet publish -c Release -o /your/path/here -r [win10-x64/osx-x64/linux-x64]
 ```
 
-publish as a single file
+publish as a single file (Currently, publishing as a single file will cause problem, playwright will not perform normally.)
 
 ```
 dotnet publish -c Release -o /your/path/here -r [win10-x64/osx-x64/linux-x64] -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
@@ -28,7 +28,7 @@ dotnet publish -c Release -o /your/path/here -r [win10-x64/osx-x64/linux-x64] -p
 and enable compression if you want to
 
 ```
-dotnet publish -c Release -o /your/path/here -r [win10-x64/osx-x64/linux-x64] -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishTrimmed=true
+dotnet publish -c Release -o /your/path/here -r [win10-x64/osx-x64/linux-x64] -p:PublishTrimmed=true
 ```
 
 ## Usage
