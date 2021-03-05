@@ -184,8 +184,9 @@ namespace SteamDB_FreeGames {
 			_logger.LogInformation("Getting page source...");
 			var htmlDoc = new HtmlDocument();
 			#region playright varialbles
+			await Playwright.InstallAsync();
 			using var playwright = await Playwright.CreateAsync();
-			await using var browser = await playwright.Firefox.LaunchAsync(headless: true);
+			await using var browser = await playwright.Webkit.LaunchAsync(headless: true);
 			#endregion
 
 			#region load page
