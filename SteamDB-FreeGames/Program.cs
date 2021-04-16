@@ -84,8 +84,8 @@ namespace SteamDB_FreeGames {
 				string gameName = tds[1].SelectSingleNode(".//b").InnerText;
 				string gameURL = tds[0].SelectSingleNode(".//a[@href]").Attributes["href"].Value.Split('?')[0];
 				string freeType = tdLen == 5 ? tds[2].InnerHtml.ToString() : tds[3].InnerHtml.ToString(); //steamDB added an extra column with a intall button
-				DateTime startTime = DateTime.ParseExact(tdLen == 5 ? tds[3].Attributes["title"].Value.ToString() : tds[4].Attributes["title"].Value.ToString(), "yyyy-MM-dTHH:mm:ss+00:00", System.Globalization.CultureInfo.InvariantCulture).AddHours(8); //steamDB added an extra column with a intall button
-				DateTime endTime = DateTime.ParseExact(tdLen == 5 ? tds[4].Attributes["title"].Value.ToString() : tds[5].Attributes["title"].Value.ToString(), "yyyy-MM-dTHH:mm:ss+00:00", System.Globalization.CultureInfo.InvariantCulture).AddHours(8); //steamDB added an extra column with a intall button
+				DateTime startTime = DateTime.ParseExact(tdLen == 5 ? tds[3].Attributes["data-time"].Value.ToString() : tds[4].Attributes["data-time"].Value.ToString(), "yyyy-MM-dTHH:mm:ss+00:00", System.Globalization.CultureInfo.InvariantCulture).AddHours(8); //steamDB added an extra column with a intall button
+				DateTime endTime = DateTime.ParseExact(tdLen == 5 ? tds[4].Attributes["data-time"].Value.ToString() : tds[5].Attributes["data-time"].Value.ToString(), "yyyy-MM-dTHH:mm:ss+00:00", System.Globalization.CultureInfo.InvariantCulture).AddHours(8); //steamDB added an extra column with a intall button
 
 				if (freeType != "Weekend") {
 					_logger.LogInformation("Found free game: {0}", gameName);
