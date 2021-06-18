@@ -84,8 +84,16 @@ namespace SteamDB_FreeGames {
 				string gameName = tds[1].SelectSingleNode(".//b").InnerText;
 				string gameURL = tds[0].SelectSingleNode(".//a[@href]").Attributes["href"].Value.Split('?')[0];
 				string freeType = tdLen == 5 ? tds[2].InnerHtml.ToString() : tds[3].InnerHtml.ToString(); //steamDB added an extra column with a intall button
-				DateTime startTime = DateTime.ParseExact(tdLen == 5 ? tds[3].Attributes["data-time"].Value.ToString() : tds[4].Attributes["data-time"].Value.ToString(), "yyyy-MM-dTHH:mm:ss+00:00", System.Globalization.CultureInfo.InvariantCulture).AddHours(8); //steamDB added an extra column with a intall button
-				DateTime endTime = DateTime.ParseExact(tdLen == 5 ? tds[4].Attributes["data-time"].Value.ToString() : tds[5].Attributes["data-time"].Value.ToString(), "yyyy-MM-dTHH:mm:ss+00:00", System.Globalization.CultureInfo.InvariantCulture).AddHours(8); //steamDB added an extra column with a intall button
+
+				string startTime, endTime;
+
+				if (tdLen == 5) { //steamDB added an extra column with a intall button
+					startTime = tds[3].Attributes["data-time"] == null ? "None" : DateTime.ParseExact(tds[3].Attributes["data-time"].Value.ToString(), "yyyy-MM-dTHH:mm:ss+00:00", System.Globalization.CultureInfo.InvariantCulture).AddHours(8).ToString(); // in case of blank start time or end time
+					endTime = tds[4].Attributes["data-time"] == null ? "None" : DateTime.ParseExact(tds[4].Attributes["data-time"].Value.ToString(), "yyyy-MM-dTHH:mm:ss+00:00", System.Globalization.CultureInfo.InvariantCulture).AddHours(8).ToString();
+				} else {
+					startTime = tds[4].Attributes["data-time"] == null ? "None" : DateTime.ParseExact(tds[4].Attributes["data-time"].Value.ToString(), "yyyy-MM-dTHH:mm:ss+00:00", System.Globalization.CultureInfo.InvariantCulture).AddHours(8).ToString();
+					endTime = tds[5].Attributes["data-time"] == null ? "None" : DateTime.ParseExact(tds[5].Attributes["data-time"].Value.ToString(), "yyyy-MM-dTHH:mm:ss+00:00", System.Globalization.CultureInfo.InvariantCulture).AddHours(8).ToString();
+				}
 
 				if (freeType != "Weekend") {
 					_logger.LogInformation("Found free game: {0}", gameName);
@@ -186,7 +194,7 @@ namespace SteamDB_FreeGames {
 			#region playright varialbles
 			await Playwright.InstallAsync();
 			using var playwright = await Playwright.CreateAsync();
-			await using var browser = await playwright.Webkit.LaunchAsync(headless: true);
+			await using var browser = await playwright.Webkit.LaunchAsync(headless: false);
 			#endregion
 
 			#region load page
