@@ -194,7 +194,7 @@ namespace SteamDB_FreeGames {
 			#region playright varialbles
 			await Playwright.InstallAsync();
 			using var playwright = await Playwright.CreateAsync();
-			await using var browser = await playwright.Webkit.LaunchAsync(headless: false);
+			await using var browser = await playwright.Webkit.LaunchAsync(headless: true);
 			#endregion
 
 			#region load page
