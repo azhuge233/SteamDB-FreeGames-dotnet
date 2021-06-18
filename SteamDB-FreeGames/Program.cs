@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using HtmlAgilityPack;
 using ScrapySharp.Network;
 using ScrapySharp.Extensions;
-using PlaywrightSharp;
+using Microsoft.Playwright;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -192,17 +192,16 @@ namespace SteamDB_FreeGames {
 			_logger.LogInformation("Getting page source...");
 			var htmlDoc = new HtmlDocument();
 			#region playright varialbles
-			await Playwright.InstallAsync();
 			using var playwright = await Playwright.CreateAsync();
-			await using var browser = await playwright.Webkit.LaunchAsync(headless: true);
+			await using var browser = await playwright.Webkit.LaunchAsync(new() { Headless = true });
 			#endregion
 
 			#region load page
 			try {
 				var page = await browser.NewPageAsync();
-				await page.GoToAsync(SteamDBUrl);
+				await page.GotoAsync(SteamDBUrl);
 				Thread.Sleep(firstDelay);
-				htmlDoc.LoadHtml(await page.GetInnerHtmlAsync("*"));
+				htmlDoc.LoadHtml(await page.InnerHTMLAsync("*"));
 				_logger.LogInformation("Done");
 			} catch (Exception ex) {
 				_logger.LogError("Get source error!");
