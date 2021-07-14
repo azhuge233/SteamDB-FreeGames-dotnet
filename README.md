@@ -1,7 +1,7 @@
 # SteamDB-FreeGames-dotnet
  [SteamDB-FreeGames](https://github.com/azhuge233/SteamDB-FreeGames) dotnet version
 
-**Seems that SteamDB really don't want people scraping their site.**
+**Seems that SteamDB really don't want people scraping their site, check [Things should be aware of](https://github.com/azhuge233/SteamDB-FreeGames-dotnet/blob/master/Things%20should%20be%20aware%20of.md) before using.**
 
 ## Requirements
 
@@ -13,7 +13,14 @@
 
 ## Build
 
-### Command
+### Install Playwright
+
+```shell
+dotnet tool install --global Microsoft.Playwright.CLI
+playwright install
+```
+
+### Publish
 
 ```
 dotnet publish -c Release -o /your/path/here -r [win10-x64/osx-x64/linux-x64]
@@ -45,7 +52,6 @@ Before executing the binary file, please follow these steps:
    	"CHAT_ID": ""
    }
    ```
-   
 
 Then fill your Telegram Bot token and your account's Chat ID.
 
