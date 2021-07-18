@@ -107,17 +107,8 @@ namespace SteamDB_FreeGames {
 					};
 					recordList.Add(tmpDic);
 
-					//decide to send notification
-					bool is_push = true;
-					foreach (var record in records) {
-						if (record["SubID"] == subID) {
-							is_push = false;
-							break;
-						}
-					}
-
-					if (is_push) { //the game is not in the previous record(a new game)
-								   //try to get game name on Steam page 
+					if (!records.Where(x => x["SubID"] == subID).Any()) { //the game is not in the previous record(a new game)
+																		  //try to get game name on Steam page 
 						var browser = new ScrapingBrowser() { Encoding = Encoding.UTF8 };
 						WebPage page = browser.NavigateToPage(new Uri(gameURL));
 						var tmpDoc = new HtmlDocument();
@@ -134,6 +125,8 @@ namespace SteamDB_FreeGames {
 
 						pushList.Add(pushMessage);
 						_logger.LogInformation("Added game {0} in push list", gameName);
+					} else {
+						_logger.LogInformation("{0} is found in previous records, skip notify...", gameName);
 					}
 				}
 			}
