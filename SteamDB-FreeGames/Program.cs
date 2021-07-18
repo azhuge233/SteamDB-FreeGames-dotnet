@@ -105,7 +105,7 @@ namespace SteamDB_FreeGames {
 					recordList.Add(tmpDic);
 
 					if (!records.Where(x => x["SubID"] == subID).Any()) { //the game is not in the previous record(a new game)
-																		  //try to get game name on Steam page 
+						//try to get game name on Steam page 
 						var browser = new ScrapingBrowser() { Encoding = Encoding.UTF8 };
 						WebPage page = browser.NavigateToPage(new Uri(gameURL));
 						var tmpDoc = new HtmlDocument();
@@ -114,7 +114,7 @@ namespace SteamDB_FreeGames {
 						if (steamName.Length > 0)
 							gameName = steamName[0].InnerText;
 
-						StringBuilder pushMessage = new StringBuilder();
+						StringBuilder pushMessage = new ();
 						pushMessage.AppendFormat("<b>{0}</b>\n\nSub ID: <i>{1}</i>\n链接: <a href=\"{2}\" > {3}</a>\n开始时间: {4}\n结束时间: {5}\n", gameName, subID, gameURL, gameName, startTime, endTime);
 
 						pushList.Add(pushMessage.ToString());
