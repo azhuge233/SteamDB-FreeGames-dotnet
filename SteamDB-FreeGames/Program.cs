@@ -73,8 +73,8 @@ namespace SteamDB_FreeGames {
 			#region data processing
 			var apps = htmlDoc.DocumentNode.CssSelect("table tr.app"); //find all free games
 			foreach (var each in apps) {
-				if (each.Attributes.HasKeyIgnoreCase("hidden")) //skip the hidden trap row
-					continue;
+				//skip the hidden trap row
+				if (each.Attributes.HasKeyIgnoreCase("hidden")) continue;
 
 				var tds = each.CssSelect("td").ToArray();
 				var tdLen = tds.Length; //steamDB added an extra column with a intall button
@@ -99,11 +99,8 @@ namespace SteamDB_FreeGames {
 					_logger.LogInformation("Found free game: {0}", gameName);
 					//add game info to recordList
 					var tmpDic = new Dictionary<string, string> {
-						["Name"] = gameName,
-						["SubID"] = subID,
-						["URL"] = gameURL,
-						["StartTime"] = startTime.ToString(),
-						["EndTime"] = endTime.ToString()
+						{ "Name", gameName }, { "SubID", subID }, { "URL", gameURL },
+						{ "StartTime", startTime }, { "EndTime", endTime }
 					};
 					recordList.Add(tmpDic);
 
@@ -117,13 +114,10 @@ namespace SteamDB_FreeGames {
 						if (steamName.Length > 0)
 							gameName = steamName[0].InnerText;
 
-						string pushMessage = "<b>" + gameName + "</b> \n\n";
-						pushMessage += "Sub ID: <i>" + subID + "</i> \n";
-						pushMessage += "链接: <a href=\"" + gameURL + "\" >" + gameName + "</a>\n";
-						pushMessage += "开始时间: " + startTime.ToString() + "\n";
-						pushMessage += "结束时间: " + endTime.ToString() + "\n";
+						StringBuilder pushMessage = new StringBuilder();
+						pushMessage.AppendFormat("<b>{0}</b>\n\nSub ID: <i>{1}</i>\n链接: <a href=\"{2}\" > {3}</a>\n开始时间: {4}\n结束时间: {5}\n", gameName, subID, gameURL, gameName, startTime, endTime);
 
-						pushList.Add(pushMessage);
+						pushList.Add(pushMessage.ToString());
 						_logger.LogInformation("Added game {0} in push list", gameName);
 					} else {
 						_logger.LogInformation("{0} is found in previous records, skip notify...", gameName);
