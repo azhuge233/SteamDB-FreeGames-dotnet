@@ -22,6 +22,7 @@ namespace SteamDB_FreeGames {
 		private readonly string configPath = "config.json";
 		private readonly string recordPath = "record.json";
 		private readonly int firstDelay = 10000;
+		private readonly string SteamDBDateFormat = "yyyy-MM-dTHH:mm:ss+00:00";
 		#endregion
 
 		public Program(ILogger<Program> logger) {
@@ -88,11 +89,11 @@ namespace SteamDB_FreeGames {
 				string startTime, endTime;
 
 				if (tdLen == 5) { //steamDB added an extra column with a intall button
-					startTime = tds[3].Attributes["data-time"] == null ? "None" : DateTime.ParseExact(tds[3].Attributes["data-time"].Value.ToString(), "yyyy-MM-dTHH:mm:ss+00:00", System.Globalization.CultureInfo.InvariantCulture).AddHours(8).ToString(); // in case of blank start time or end time
-					endTime = tds[4].Attributes["data-time"] == null ? "None" : DateTime.ParseExact(tds[4].Attributes["data-time"].Value.ToString(), "yyyy-MM-dTHH:mm:ss+00:00", System.Globalization.CultureInfo.InvariantCulture).AddHours(8).ToString();
+					startTime = tds[3].Attributes["data-time"] == null ? "None" : DateTime.ParseExact(tds[3].Attributes["data-time"].Value.ToString(), SteamDBDateFormat, System.Globalization.CultureInfo.InvariantCulture).AddHours(8).ToString(); // in case of blank start time or end time
+					endTime = tds[4].Attributes["data-time"] == null ? "None" : DateTime.ParseExact(tds[4].Attributes["data-time"].Value.ToString(), SteamDBDateFormat, System.Globalization.CultureInfo.InvariantCulture).AddHours(8).ToString();
 				} else {
-					startTime = tds[4].Attributes["data-time"] == null ? "None" : DateTime.ParseExact(tds[4].Attributes["data-time"].Value.ToString(), "yyyy-MM-dTHH:mm:ss+00:00", System.Globalization.CultureInfo.InvariantCulture).AddHours(8).ToString();
-					endTime = tds[5].Attributes["data-time"] == null ? "None" : DateTime.ParseExact(tds[5].Attributes["data-time"].Value.ToString(), "yyyy-MM-dTHH:mm:ss+00:00", System.Globalization.CultureInfo.InvariantCulture).AddHours(8).ToString();
+					startTime = tds[4].Attributes["data-time"] == null ? "None" : DateTime.ParseExact(tds[4].Attributes["data-time"].Value.ToString(), SteamDBDateFormat, System.Globalization.CultureInfo.InvariantCulture).AddHours(8).ToString();
+					endTime = tds[5].Attributes["data-time"] == null ? "None" : DateTime.ParseExact(tds[5].Attributes["data-time"].Value.ToString(), SteamDBDateFormat, System.Globalization.CultureInfo.InvariantCulture).AddHours(8).ToString();
 				}
 
 				if (freeType != "Weekend") {
@@ -120,7 +121,7 @@ namespace SteamDB_FreeGames {
 						pushList.Add(pushMessage.ToString());
 						_logger.LogInformation("Added game {0} in push list", gameName);
 					} else {
-						_logger.LogInformation("{0} is found in previous records, skip notify...", gameName);
+						_logger.LogInformation("{0} is found in previous records, stop adding in push list...", gameName);
 					}
 				}
 			}
