@@ -128,7 +128,6 @@ namespace SteamDB_FreeGames {
 
 			_logger.LogInformation("Writing records...");
 			#region write records
-			//write new record
 			using (var jsonOp = new JsonOP()) {
 				if (recordList.Count > 0) {
 					jsonOp.WriteData(recordList, recordPath);
