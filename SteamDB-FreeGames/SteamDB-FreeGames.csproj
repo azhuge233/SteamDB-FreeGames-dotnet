@@ -19,7 +19,11 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
   </ItemGroup>
+  
   <ItemGroup>
-    <Compile Remove="GetSourceClass.cs" />
+    <None Update="nlog.config" CopyToOutputDirectory="Always" />
+    <None Update="config.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="record.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
+  
 </Project>
