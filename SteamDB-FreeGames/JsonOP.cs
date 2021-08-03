@@ -7,8 +7,8 @@ using Microsoft.Extensions.Logging;
 namespace SteamDB_FreeGames {
 	public class JsonOP: IDisposable {
 		private readonly ILogger<JsonOP> _logger;
-		private readonly string configPath = "config.json";
-		private readonly string recordPath = "record.json";
+		private readonly string configPath = $"{AppDomain.CurrentDomain.BaseDirectory}{Path.DirectorySeparatorChar}config.json";
+		private readonly string recordPath = $"{AppDomain.CurrentDomain.BaseDirectory}{Path.DirectorySeparatorChar}record.json";
 
 		public JsonOP(ILogger<JsonOP> logger) {
 			_logger = logger;
