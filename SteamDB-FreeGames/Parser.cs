@@ -47,6 +47,8 @@ namespace SteamDB_FreeGames {
 						endTime = tds[5].Attributes["data-time"] == null ? "None" : DateTime.ParseExact(tds[5].Attributes["data-time"].Value.ToString(), SteamDBDateFormat, System.Globalization.CultureInfo.InvariantCulture).AddHours(8).ToString();
 					}
 
+					_logger.LogDebug("Found game: {0}. Freetype: {1}", gameName, freeType);
+
 					if (freeType != "Weekend") {
 						_logger.LogInformation("Found free game: {0}", gameName);
 						//add game info to recordList
