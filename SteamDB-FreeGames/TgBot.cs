@@ -9,6 +9,7 @@ namespace SteamDB_FreeGames {
 	public class TgBot: IDisposable {
 		private readonly ILogger<TgBot> _logger;
 		private TelegramBotClient BotClient { get; set; }
+		private readonly string debugSendMessage = "Sending Message";
 
 		public TgBot(ILogger<TgBot> logger) {
 			_logger = logger;
@@ -24,15 +25,16 @@ namespace SteamDB_FreeGames {
 			int count = 1;
 			try {
 				foreach (var msg in msgs) {
-					_logger.LogDebug("Sending Message {0}", count++);
+					_logger.LogDebug($"{debugSendMessage} {count++}");
 					await BotClient.SendTextMessageAsync(
 						chatId: chatID,
 						text: msg,
 						parseMode: htmlMode ? ParseMode.Html : ParseMode.Default
 					);
 				}
+				_logger.LogDebug($"Done: {debugSendMessage}");
 			} catch (Exception) {
-				_logger.LogError("Send notification failed.");
+				_logger.LogError($"Error: {debugSendMessage}");
 				throw;
 			} finally {
 				Dispose();

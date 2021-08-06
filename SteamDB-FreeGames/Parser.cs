@@ -12,12 +12,16 @@ namespace SteamDB_FreeGames {
 		private readonly ILogger<Parser> _logger;
 		private readonly string SteamDBDateFormat = "yyyy-MM-dTHH:mm:ss+00:00";
 
+		private readonly string debugParser = "Parse";
+
 		public Parser(ILogger<Parser> logger) {
 			_logger = logger;
 		}
 
 		public Tuple<List<string>, List<Dictionary<string, string>>> Parse(string source, List<Dictionary<string, string>> records) {
 			try {
+				_logger.LogDebug(debugParser);
+
 				var pushList = new List<string>(); // notification list
 				var recordList = new List<Dictionary<string, string>>(); // new records list
 				var htmlDoc = new HtmlDocument();
@@ -79,9 +83,10 @@ namespace SteamDB_FreeGames {
 					}
 				}
 
+				_logger.LogDebug($"Done: {debugParser}");
 				return new Tuple<List<string>, List<Dictionary<string, string>>>(pushList, recordList);
 			} catch (Exception) {
-				_logger.LogError("Parsing Error");
+				_logger.LogError($"Error: {debugParser}");
 				throw;
 			} finally {
 				Dispose();

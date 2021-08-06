@@ -10,14 +10,16 @@ namespace SteamDB_FreeGames {
 		private readonly string SteamDBUrl = "https://steamdb.info/upcoming/free/";
 		private readonly int firstDelay = 10000;
 
+		private readonly string debugPlaywright = "Get page source";
+
 		public PlayWrightOP(ILogger<PlayWrightOP> logger) {
 			_logger = logger;
 		}
 
 		public async Task<string> GetHtmlSource() {
 			try {
+				_logger.LogDebug(debugPlaywright);
 				Microsoft.Playwright.Program.Main(new string[] { "install", "webkit" }); // From https://github.com/microsoft/playwright-dotnet/issues/1545#issuecomment-865199736
-				_logger.LogDebug("Getting page source");
 				string source;
 				using var playwright = await Playwright.CreateAsync();
 				await using var browser = await playwright.Webkit.LaunchAsync(new() { Headless = true });
@@ -26,10 +28,10 @@ namespace SteamDB_FreeGames {
 				await page.GotoAsync(SteamDBUrl);
 				Thread.Sleep(firstDelay);
 				source = await page.InnerHTMLAsync("*");
-				_logger.LogDebug("Done");
+				_logger.LogDebug($"Done: {debugPlaywright}");
 				return source;
 			} catch (Exception) {
-				_logger.LogError("Getting page source Error");
+				_logger.LogError($"Error: {debugPlaywright}");
 				throw;
 			} finally {
 				Dispose();
