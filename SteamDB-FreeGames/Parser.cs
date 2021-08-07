@@ -11,6 +11,7 @@ namespace SteamDB_FreeGames {
 	class Parser : IDisposable {
 		private readonly ILogger<Parser> _logger;
 		private readonly string SteamDBDateFormat = "yyyy-MM-dTHH:mm:ss+00:00";
+		private readonly string pushFormat = "<b>{0}</b>\n\nSub ID: <i>{1}</i>\n链接: <a href=\"{2}\" > {3}</a>\n开始时间: {4}\n结束时间: {5}\n";
 
 		private readonly string debugParser = "Parse";
 
@@ -39,31 +40,24 @@ namespace SteamDB_FreeGames {
 					string subID = tds[1].SelectSingleNode(".//a[@href]").Attributes["href"].Value.Split('/')[2];
 					string gameName = tds[1].SelectSingleNode(".//b").InnerText;
 					string gameURL = tds[0].SelectSingleNode(".//a[@href]").Attributes["href"].Value.Split('?')[0];
-					string freeType = tdLen == 5 ? tds[2].InnerHtml.ToString() : tds[3].InnerHtml.ToString(); //steamDB added an extra column with a intall button
-
-					string startTime, endTime;
-
-					if (tdLen == 5) { //steamDB added an extra column with a intall button
-						startTime = tds[3].Attributes["data-time"] == null ? "None" : DateTime.ParseExact(tds[3].Attributes["data-time"].Value.ToString(), SteamDBDateFormat, System.Globalization.CultureInfo.InvariantCulture).AddHours(8).ToString(); // in case of blank start time or end time
-						endTime = tds[4].Attributes["data-time"] == null ? "None" : DateTime.ParseExact(tds[4].Attributes["data-time"].Value.ToString(), SteamDBDateFormat, System.Globalization.CultureInfo.InvariantCulture).AddHours(8).ToString();
-					} else {
-						startTime = tds[4].Attributes["data-time"] == null ? "None" : DateTime.ParseExact(tds[4].Attributes["data-time"].Value.ToString(), SteamDBDateFormat, System.Globalization.CultureInfo.InvariantCulture).AddHours(8).ToString();
-						endTime = tds[5].Attributes["data-time"] == null ? "None" : DateTime.ParseExact(tds[5].Attributes["data-time"].Value.ToString(), SteamDBDateFormat, System.Globalization.CultureInfo.InvariantCulture).AddHours(8).ToString();
-					}
+					string freeType = tds[3].InnerHtml.ToString();
+					string startTime = tds[4].Attributes["data-time"] == null ? "None" : DateTime.ParseExact(tds[4].Attributes["data-time"].Value.ToString(), SteamDBDateFormat, System.Globalization.CultureInfo.InvariantCulture).AddHours(8).ToString(); // in case of blank start time or end time
+					string endTime = tds[5].Attributes["data-time"] == null ? "None" : DateTime.ParseExact(tds[5].Attributes["data-time"].Value.ToString(), SteamDBDateFormat, System.Globalization.CultureInfo.InvariantCulture).AddHours(8).ToString();
 
 					_logger.LogDebug("Found game: {0}. Freetype: {1}", gameName, freeType);
 
 					if (freeType != "Weekend") {
 						_logger.LogInformation("Found free game: {0}", gameName);
+
 						//add game info to recordList
-						var tmpDic = new Dictionary<string, string> {
+						recordList.Add(new Dictionary<string, string> {
 							{ "Name", gameName }, { "SubID", subID }, { "URL", gameURL },
 							{ "StartTime", startTime }, { "EndTime", endTime }
-						};
-						recordList.Add(tmpDic);
+						});
 
 						if (!records.Where(x => x["SubID"] == subID).Any()) { // the game is not in the previous record(a new game)
-																			  // try to get game name on Steam page 
+							// try to get game name on Steam page 
+							// to be moved to Scraper.cs
 							var browser = new ScrapingBrowser() { Encoding = Encoding.UTF8 };
 							WebPage page = browser.NavigateToPage(new Uri(gameURL));
 							var tmpDoc = new HtmlDocument();
@@ -73,7 +67,7 @@ namespace SteamDB_FreeGames {
 								gameName = steamName[0].InnerText;
 
 							StringBuilder pushMessage = new();
-							pushMessage.AppendFormat("<b>{0}</b>\n\nSub ID: <i>{1}</i>\n链接: <a href=\"{2}\" > {3}</a>\n开始时间: {4}\n结束时间: {5}\n", gameName, subID, gameURL, gameName, startTime, endTime);
+							pushMessage.AppendFormat(pushFormat, gameName, subID, gameURL, gameName, startTime, endTime);
 
 							pushList.Add(pushMessage.ToString());
 							_logger.LogInformation("Added game {0} in push list", gameName);

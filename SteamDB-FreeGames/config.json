@@ -1,5 +1,5 @@
 {
-  "ENABLE_HEADLESS": true,
   "TOKEN": "",
-  "CHAT_ID": ""
+  "CHAT_ID": "",
+  "ENABLE_HEADLESS": true
 }
