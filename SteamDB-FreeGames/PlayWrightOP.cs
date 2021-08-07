@@ -16,13 +16,13 @@ namespace SteamDB_FreeGames {
 			_logger = logger;
 		}
 
-		public async Task<string> GetHtmlSource() {
+		public async Task<string> GetHtmlSource(bool useHeadless = true) {
 			try {
 				_logger.LogDebug(debugPlaywright);
 				Microsoft.Playwright.Program.Main(new string[] { "install", "webkit" }); // From https://github.com/microsoft/playwright-dotnet/issues/1545#issuecomment-865199736
 				string source;
 				using var playwright = await Playwright.CreateAsync();
-				await using var browser = await playwright.Webkit.LaunchAsync(new() { Headless = true });
+				await using var browser = await playwright.Webkit.LaunchAsync(new() { Headless = useHeadless });
 
 				var page = await browser.NewPageAsync();
 				await page.GotoAsync(SteamDBUrl);

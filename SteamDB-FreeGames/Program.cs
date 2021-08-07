@@ -9,7 +9,7 @@ using NLog.Extensions.Logging;
 namespace SteamDB_FreeGames {
     class Program {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private static readonly IConfigurationRoot config = new ConfigurationBuilder()
+        private static readonly IConfigurationRoot logConfig = new ConfigurationBuilder()
                    .SetBasePath(System.IO.Directory.GetCurrentDirectory())
                    .Build();
 
@@ -23,7 +23,7 @@ namespace SteamDB_FreeGames {
                    // configure Logging with NLog
                    loggingBuilder.ClearProviders();
                    loggingBuilder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
-                   loggingBuilder.AddNLog(config);
+                   loggingBuilder.AddNLog(logConfig);
                })
                .BuildServiceProvider();
         }
@@ -37,12 +37,12 @@ namespace SteamDB_FreeGames {
                 using (servicesProvider as IDisposable) {
                     // Get telegram bot token, chatID and previous records
                     var jsonOp = servicesProvider.GetRequiredService<JsonOP>();
-                    var tgConfig = jsonOp.LoadConfig(); // token, chatID
+                    var config = jsonOp.LoadConfig(); // token, chatID
                     var oldRecords = jsonOp.LoadData(); // old records
 
                     // Get page source
                     var playwrightOp = servicesProvider.GetRequiredService<PlayWrightOP>();
-                    var source = playwrightOp.GetHtmlSource();
+                    var source = playwrightOp.GetHtmlSource(Convert.ToBoolean(config["ENABLE_HEADLESS"]));
 
                     // Parse page source
                     var parser = servicesProvider.GetRequiredService<Parser>();
@@ -55,7 +55,7 @@ namespace SteamDB_FreeGames {
 
                     //Send notifications
                     var tgBot = servicesProvider.GetRequiredService<TgBot>();
-                    await tgBot.SendMessage(token: tgConfig["TOKEN"], chatID: tgConfig["CHAT_ID"], pushList, htmlMode: true);
+                    await tgBot.SendMessage(token: config["TOKEN"], chatID: config["CHAT_ID"], pushList, htmlMode: true);
                 }
 
                 logger.Info(" - Job End -\n");
