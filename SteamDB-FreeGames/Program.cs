@@ -13,9 +13,9 @@ namespace SteamDB_FreeGames {
                    .SetBasePath(System.IO.Directory.GetCurrentDirectory())
                    .Build();
 
-        private static IServiceProvider BuildDi() {
+        public static IServiceProvider BuildDi() {
             return new ServiceCollection()
-               .AddTransient<PlayWrightOP>()
+               .AddTransient<Scraper>()
                .AddTransient<Parser>()
                .AddTransient<TgBot>()
                .AddTransient<JsonOP>()
@@ -41,8 +41,8 @@ namespace SteamDB_FreeGames {
                     var oldRecords = jsonOp.LoadData(); // old records
 
                     // Get page source
-                    var playwrightOp = servicesProvider.GetRequiredService<PlayWrightOP>();
-                    var source = playwrightOp.GetHtmlSource(Convert.ToBoolean(config["ENABLE_HEADLESS"]));
+                    var playwrightOp = servicesProvider.GetRequiredService<Scraper>();
+                    var source = playwrightOp.GetSteamDBSource(Convert.ToBoolean(config["ENABLE_HEADLESS"]));
 
                     // Parse page source
                     var parser = servicesProvider.GetRequiredService<Parser>();
