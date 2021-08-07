@@ -57,9 +57,9 @@ namespace SteamDB_FreeGames {
 						_logger.LogInformation("Found free game: {0}", gameName);
 						//add game info to recordList
 						var tmpDic = new Dictionary<string, string> {
-						{ "Name", gameName }, { "SubID", subID }, { "URL", gameURL },
-						{ "StartTime", startTime }, { "EndTime", endTime }
-					};
+							{ "Name", gameName }, { "SubID", subID }, { "URL", gameURL },
+							{ "StartTime", startTime }, { "EndTime", endTime }
+						};
 						recordList.Add(tmpDic);
 
 						if (!records.Where(x => x["SubID"] == subID).Any()) { // the game is not in the previous record(a new game)
