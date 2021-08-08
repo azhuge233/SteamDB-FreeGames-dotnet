@@ -16,6 +16,8 @@
 
 ## Build
 
+Install dotnet 5.0 SDK first, you can find installation packages/guides [here](https://dotnet.microsoft.com/download).
+
 ### Publish
 
 ```
