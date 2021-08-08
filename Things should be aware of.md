@@ -6,7 +6,7 @@
 
         So for the long-term interests (both scraping and visiting), setting a proper delay is important(I personally set one request per 15 minutes), and to be honest, the free games page is not that active since Steam itself does not always has new free games.
         
-    - If you access SteamDB too frequently, Cloudflare will set higher challenge difficulty. If the frequency doesn't slow down, eventually Cloudflare will mark your IP (or some other signatures) and block your requests for a while, the browser will be at least stuck in a js-challenge loop.
+    - If you access SteamDB too frequently, Cloudflare will set higher challenge difficulty. If the frequency doesn't slow down, eventually Cloudflare will mark your IP (or some other signatures) and block your requests for a while, the browser will be at least stuck in a js-challenge loop. I'm not promising this is the actual Cloudflare strategy, but this is what I've experienced.
 
 2. About SteamDB free games page
 
