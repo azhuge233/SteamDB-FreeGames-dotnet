@@ -14,15 +14,6 @@
 - GOG
     - [https://github.com/azhuge233/GOGGiveawayNotifier](https://github.com/azhuge233/GOGGiveawayNotifier)
 
-## Requirements
-
-- .NET 5	
-    - NLog
-    - HtmlAgilityPack
-    - ScrapySharp
-    - PlaywrightSharp
-    - Telegram.Bot
-
 ## Build
 
 ### Publish
@@ -43,3 +34,9 @@ Fill your Telegram Bot token and chat ID in config.json
 ```
 
 Tested on Windows Server 2019, macOS Catalina 10.15.6.
+
+## To-do
+
+- Add more notify methods
+    - Email
+    - iOS Barker
