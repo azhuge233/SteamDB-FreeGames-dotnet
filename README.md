@@ -14,6 +14,8 @@
 - GOG
     - [https://github.com/azhuge233/GOGGiveawayNotifier](https://github.com/azhuge233/GOGGiveawayNotifier)
 
+Related Telegram Channel [@azhuge233_FreeGames](https://t.me/azhuge233_FreeGames)
+
 ## Build
 
 Install dotnet 5.0 SDK first, you can find installation packages/guides [here](https://dotnet.microsoft.com/download).
