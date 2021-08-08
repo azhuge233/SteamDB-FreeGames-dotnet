@@ -31,9 +31,12 @@ Fill your Telegram Bot token and chat ID in config.json
 ```json
 {
 	"TOKEN": "xxxxxx:xxxxxx",
-	"CHAT_ID": "xxxxxxxx"
+	"CHAT_ID": "xxxxxxxx",
+    ...
 }
 ```
+
+Check other configuration variables in [wiki](https://github.com/azhuge233/SteamDB-FreeGames-dotnet/wiki/Config-Description).
 
 Tested on Windows Server 2019, macOS Catalina 10.15.6.
 
