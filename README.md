@@ -1,6 +1,4 @@
 # SteamDB-FreeGames-dotnet
- [SteamDB-FreeGames](https://github.com/azhuge233/SteamDB-FreeGames) dotnet version
-
 **Seems that SteamDB really don't want people scraping their site, check [Things should be aware of](https://github.com/azhuge233/SteamDB-FreeGames-dotnet/blob/master/Things%20should%20be%20aware%20of.md) before using.**
 
 ## My Free Games Collection
