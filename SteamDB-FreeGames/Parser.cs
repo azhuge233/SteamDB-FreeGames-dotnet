@@ -1,31 +1,41 @@
 ﻿using System;
-using System.Text;
 using System.Linq;
 using System.Collections.Generic;
 using HtmlAgilityPack;
 using ScrapySharp.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
+using SteamDB_FreeGames.Models;
 
 namespace SteamDB_FreeGames {
 	class Parser : IDisposable {
+		#region DI variable
 		private readonly ILogger<Parser> _logger;
 		private readonly IServiceProvider services = Program.BuildDi();
-		private readonly string SteamDBDateFormat = "yyyy-MM-dTHH:mm:ss+00:00";
-		private readonly string pushFormat = "<b>{0}</b>\n\nSub ID: <i>{1}</i>\n链接: <a href=\"{2}\" > {3}</a>\n开始时间: {4}\n结束时间: {5}\n";
+		#endregion
 
-		private readonly string debugParser = "Parse";
+		#region configKeys string
+		public readonly string useHeadlessKey = "ENABLE_HEADLESS";
+		public readonly string keepGamesOnlyKey = "KEEP_GAMES_ONLY";
+		#endregion
+
+		#region debug strings
+		private readonly string debugHtmlParser = "Parse";
+		private readonly string debugConfigConvertToBool = "Convert config files to bool";
+		#endregion
+
+		private readonly string SteamDBDateFormat = "yyyy-MM-dTHH:mm:ss+00:00";
 
 		public Parser(ILogger<Parser> logger) {
 			_logger = logger;
 		}
 
-		public Tuple<List<string>, List<Dictionary<string, string>>> Parse(string source, List<Dictionary<string, string>> records) {
+		public Tuple<List<FreeGameRecord>, List<FreeGameRecord>> HtmlParse(string source, List<FreeGameRecord> records, bool keepGamesOnly = true) {
 			try {
-				_logger.LogDebug(debugParser);
+				_logger.LogDebug(debugHtmlParser);
 
-				var pushList = new List<string>(); // notification list
-				var recordList = new List<Dictionary<string, string>>(); // new records list
+				var pushList = new List<FreeGameRecord>(); // notification list
+				var recordList = new List<FreeGameRecord>(); // new records list
 				var htmlDoc = new HtmlDocument();
 				htmlDoc.LoadHtml(source);
 
@@ -35,53 +45,82 @@ namespace SteamDB_FreeGames {
 					if (each.Attributes.HasKeyIgnoreCase("hidden")) continue;
 
 					var tds = each.CssSelect("td").ToArray();
-					//var tdLen = tds.Length; //steamDB added an extra column with a intall button
 
-					//start gather free game basic info
-					string subID = tds[1].SelectSingleNode(".//a[@href]").Attributes["href"].Value.Split('/')[2];
-					string gameName = tds[1].SelectSingleNode(".//b").InnerText;
-					string gameURL = tds[0].SelectSingleNode(".//a[@href]").Attributes["href"].Value.Split('?')[0];
-					string freeType = tds[3].InnerHtml.ToString();
-					string startTime = tds[4].Attributes["data-time"] == null ? "None" : DateTime.ParseExact(tds[4].Attributes["data-time"].Value.ToString(), SteamDBDateFormat, System.Globalization.CultureInfo.InvariantCulture).AddHours(8).ToString(); // in case of blank start/end time
-					string endTime = tds[5].Attributes["data-time"] == null ? "None" : DateTime.ParseExact(tds[5].Attributes["data-time"].Value.ToString(), SteamDBDateFormat, System.Globalization.CultureInfo.InvariantCulture).AddHours(8).ToString();
+					var newFreeGame = new FreeGameRecord {
+						//start gather free game basic info
+						SubID = tds[1].SelectSingleNode(".//a[@href]").Attributes["href"].Value.Split('/')[2],
+						Name = tds[1].SelectSingleNode(".//b").InnerText,
+						FreeType = tds[3].InnerHtml.ToString() == "Weekend" ? "Weekend" : "Keep",
+						Url = tds[0].SelectSingleNode(".//a[@href]").Attributes["href"].Value.Split('?')[0],
+						StartTime = tds[4].Attributes["data-time"] == null ? DateTime.Now : DateTime.ParseExact(tds[4].Attributes["data-time"].Value.ToString(), SteamDBDateFormat, System.Globalization.CultureInfo.InvariantCulture).AddHours(8), // in case of blank start/end time
+						EndTime = tds[5].Attributes["data-time"] == null ? DateTime.Now : DateTime.ParseExact(tds[5].Attributes["data-time"].Value.ToString(), SteamDBDateFormat, System.Globalization.CultureInfo.InvariantCulture).AddHours(8)
+					};
 
-					_logger.LogDebug("Found game: {0}. Freetype: {1}", gameName, freeType.Contains("Keep") ? "Keep" : freeType);
+					if (keepGamesOnly) {
 
-					if (freeType != "Weekend") {
-						_logger.LogInformation("Found free game: {0}", gameName);
+						_logger.LogDebug("Found game: {0}. Freetype: {1}", newFreeGame.Name, newFreeGame.FreeType);
 
-						//add game info to recordList
-						recordList.Add(new Dictionary<string, string> {
-							{ "Name", gameName }, { "SubID", subID }, { "URL", gameURL },
-							{ "StartTime", startTime }, { "EndTime", endTime }
-						});
+						if (newFreeGame.FreeType == "Keep") {
+							_logger.LogInformation("Found free game: {0}", newFreeGame.Name);
 
-						if (!records.Where(x => x["SubID"] == subID).Any()) { // the game is not in the previous record(a new game)
-							// try to get game name on Steam page 
-							var tmpDoc = services.GetRequiredService<Scraper>().GetSteamSource(gameURL);
+							//add game info to recordList
+							recordList.Add(newFreeGame);
+
+							if (!records.Where(x => x.SubID == newFreeGame.SubID).Any()) { // the game is not in the previous record(a new game)
+																						   // try to get game name on Steam page 
+								var tmpDoc = services.GetRequiredService<Scraper>().GetSteamSource(newFreeGame.Url);
+
+								var steamName = tmpDoc.DocumentNode.CssSelect("div.apphub_AppName").ToArray();
+								if (steamName.Length > 0)
+									newFreeGame.Name = steamName[0].InnerText;
+
+								pushList.Add(newFreeGame);
+								_logger.LogInformation("Added game {0} in push list", newFreeGame.Name);
+							} else {
+								_logger.LogInformation("{0} is found in previous records, stop adding in push list", newFreeGame.Name);
+							}
+						}
+					} else {
+						_logger.LogInformation("Found game: {0}. Freetype: {1}", newFreeGame.Name, newFreeGame.FreeType);
+
+						recordList.Add(newFreeGame);
+
+						if (!records.Where(x => x.SubID == newFreeGame.SubID).Any()) { // the game is not in the previous record(a new game)
+																					   // try to get game name on Steam page 
+							var tmpDoc = services.GetRequiredService<Scraper>().GetSteamSource(newFreeGame.Url);
 
 							var steamName = tmpDoc.DocumentNode.CssSelect("div.apphub_AppName").ToArray();
 							if (steamName.Length > 0)
-								gameName = steamName[0].InnerText;
+								newFreeGame.Name = steamName[0].InnerText;
 
-							StringBuilder pushMessage = new();
-							pushMessage.AppendFormat(pushFormat, gameName, subID, gameURL, gameName, startTime, endTime);
-
-							pushList.Add(pushMessage.ToString());
-							_logger.LogInformation("Added game {0} in push list", gameName);
+							pushList.Add(newFreeGame);
+							_logger.LogInformation("Added game {0} in push list", newFreeGame.Name);
 						} else {
-							_logger.LogInformation("{0} is found in previous records, stop adding in push list", gameName);
+							_logger.LogInformation("{0} is found in previous records, stop adding in push list", newFreeGame.Name);
 						}
 					}
 				}
 
-				_logger.LogDebug($"Done: {debugParser}");
-				return new Tuple<List<string>, List<Dictionary<string, string>>>(pushList, recordList);
+				_logger.LogDebug($"Done: {debugHtmlParser}");
+				return new Tuple<List<FreeGameRecord>, List<FreeGameRecord>>(pushList, recordList);
 			} catch (Exception) {
-				_logger.LogError($"Error: {debugParser}");
+				_logger.LogError($"Error: {debugHtmlParser}");
 				throw;
-			} finally {
-				Dispose();
+			}
+		}
+
+		public Dictionary<string, bool> ConvertConfigToBool(Dictionary<string, string> config) {
+			try {
+				_logger.LogDebug(debugConfigConvertToBool);
+				var dic = new Dictionary<string, bool> {
+					{ useHeadlessKey, Convert.ToBoolean(config[useHeadlessKey]) },
+					{ keepGamesOnlyKey, Convert.ToBoolean(config[keepGamesOnlyKey]) }
+				};
+				_logger.LogDebug($"Done: {debugConfigConvertToBool}");
+				return dic;
+			} catch (Exception) {
+				_logger.LogError($"Error: {debugConfigConvertToBool}");
+				throw;
 			}
 		}
 

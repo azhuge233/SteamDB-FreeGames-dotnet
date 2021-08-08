@@ -35,26 +35,26 @@ namespace SteamDB_FreeGames {
                 logger.Info(" - Start Job -");
 
                 using (servicesProvider as IDisposable) {
-                    // Get telegram bot token, chatID and previous records
                     var jsonOp = servicesProvider.GetRequiredService<JsonOP>();
-                    var config = jsonOp.LoadConfig(); // token, chatID
-                    var oldRecords = jsonOp.LoadData(); // old records
+                    var playwrightOp = servicesProvider.GetRequiredService<Scraper>();
+                    var tgBot = servicesProvider.GetRequiredService<TgBot>();
+                    var parser = servicesProvider.GetRequiredService<Parser>();
+
+                    var config = jsonOp.LoadConfig();
+                    var convertedBools = parser.ConvertConfigToBool(config);
 
                     // Get page source
-                    var playwrightOp = servicesProvider.GetRequiredService<Scraper>();
-                    var source = playwrightOp.GetSteamDBSource(Convert.ToBoolean(config["ENABLE_HEADLESS"]));
+                    var source = await playwrightOp.GetSteamDBSource(convertedBools[parser.useHeadlessKey]);
 
                     // Parse page source
-                    var parser = servicesProvider.GetRequiredService<Parser>();
-                    var parseResult = parser.Parse(source.Result, oldRecords);
+                    var parseResult = parser.HtmlParse(source, jsonOp.LoadData(convertedBools[parser.keepGamesOnlyKey]), convertedBools[parser.keepGamesOnlyKey]);
                     var pushList = parseResult.Item1; // notification list
                     var recordList = parseResult.Item2; // new records list
 
                     // Write new records
-                    jsonOp.WriteData(recordList);
+                    jsonOp.WriteData(recordList, convertedBools[parser.keepGamesOnlyKey]);
 
                     //Send notifications
-                    var tgBot = servicesProvider.GetRequiredService<TgBot>();
                     await tgBot.SendMessage(token: config["TOKEN"], chatID: config["CHAT_ID"], pushList, htmlMode: true);
                 }
 

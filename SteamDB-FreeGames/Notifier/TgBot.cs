@@ -4,31 +4,34 @@ using System.Collections.Generic;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using Microsoft.Extensions.Logging;
+using SteamDB_FreeGames.Models;
 
 namespace SteamDB_FreeGames {
 	public class TgBot: IDisposable {
 		private readonly ILogger<TgBot> _logger;
-		private TelegramBotClient BotClient { get; set; }
+
+		#region debug strings
 		private readonly string debugSendMessage = "Sending Message";
+		#endregion
 
 		public TgBot(ILogger<TgBot> logger) {
 			_logger = logger;
 		}
 
-		public async Task SendMessage(string token, string chatID, List<string> msgs, bool htmlMode = false) {
-			if (msgs.Count == 0) {
+		public async Task SendMessage(string token, string chatID, List<FreeGameRecord> records, bool htmlMode = false) {
+			if (records.Count == 0) {
 				_logger.LogInformation("No new notifications !");
 				return;
 			}
 
-			BotClient = new TelegramBotClient(token: token);
-			int count = 1;
+			var BotClient = new TelegramBotClient(token: token);
+
 			try {
-				foreach (var msg in msgs) {
-					_logger.LogDebug($"{debugSendMessage} {count++}");
+				foreach (var record in records) {
+					_logger.LogDebug($"{debugSendMessage} : {record.Name}");
 					await BotClient.SendTextMessageAsync(
 						chatId: chatID,
-						text: msg,
+						text: record.ToMessage(),
 						parseMode: htmlMode ? ParseMode.Html : ParseMode.Default
 					);
 				}
