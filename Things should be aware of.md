@@ -5,6 +5,8 @@
     - SteamDB has been trying things to protect their site from scraping, include adding fake record and hCaptcha, which is disgusting, this action has also affected non-scraping people's experience, you can search for compliants at [keylol.com](https://keylol.com) (or some other sites).
 
         So for the long-term interests (both scraping and visiting), setting a proper delay is important, and to be honest, the free games page is not that active since Steam itself does not always has new free games.
+        
+    - If you access SteamDB too frequently, Cloudflare will mark your IP (or other signatures) and block your requests for a while.
 
 2. SteamDB's free games page
 
