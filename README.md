@@ -43,6 +43,6 @@ Tested on Windows Server 2019, macOS Catalina 10.15.6.
 
 ## To-do
 
-- Add more notify methods
-    - Email
-    - iOS Barker
+- [ ] Add more notify methods
+    - [ ] Email
+    - [x] iOS Barker
