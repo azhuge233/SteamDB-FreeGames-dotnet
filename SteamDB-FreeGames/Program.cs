@@ -49,8 +49,8 @@ namespace SteamDB_FreeGames {
                     var convertedInts = parser.ConvertConfigToInt(config);
 
                     // Get page source
-                    //var source = await servicesProvider.GetRequiredService<Scraper>().GetSteamDBSource(convertedInts[ConfigKeys.TimeOutSecKey], convertedBools[ConfigKeys.UseHeadlessKey]);
-                    var source = File.ReadAllText("test.html");
+                    var source = await servicesProvider.GetRequiredService<Scraper>().GetSteamDBSource(convertedInts[ConfigKeys.TimeOutSecKey], convertedBools[ConfigKeys.UseHeadlessKey]);
+                    //var source = File.ReadAllText("test.html");
 
                     // Parse page source
                     var parseResult = parser.HtmlParse(source, jsonOp.LoadData(convertedBools[ConfigKeys.KeepGamesOnlyKey]), convertedBools[ConfigKeys.KeepGamesOnlyKey]);
