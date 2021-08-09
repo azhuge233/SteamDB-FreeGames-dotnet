@@ -16,9 +16,12 @@
     <PackageReference Include="ScrapySharp" Version="3.0.0" />
     <PackageReference Include="Telegram.Bot" Version="16.0.2" />
   </ItemGroup>
+
+  <Target Name="CopyNlogConfig" AfterTargets="AfterBuild">
+    <Copy SourceFiles="Config File\nlog.config" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+  </Target>
   
   <ItemGroup>
-    <None Update="Config File\nlog.config" CopyToOutputDirectory="Always" />
     <None Update="Config File\config.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="Records\KeepOnlyRecords.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="Records\AllRecords.json" CopyToOutputDirectory="PreserveNewest" />

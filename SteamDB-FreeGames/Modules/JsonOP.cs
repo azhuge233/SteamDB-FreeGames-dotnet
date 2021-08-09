@@ -10,9 +10,9 @@ namespace SteamDB_FreeGames {
 		private readonly ILogger<JsonOP> _logger;
 
 		#region path strings
-		private readonly string configPath = $"{AppDomain.CurrentDomain.BaseDirectory}{Path.DirectorySeparatorChar}config.json";
-		private readonly string keepOnlyRecordsPath = $"{AppDomain.CurrentDomain.BaseDirectory}{Path.DirectorySeparatorChar}KeepOnlyRecords.json";
-		private readonly string allRecordsPath = $"{AppDomain.CurrentDomain.BaseDirectory}{Path.DirectorySeparatorChar}AllRecords.json";
+		private readonly string configPath = $"{AppDomain.CurrentDomain.BaseDirectory}Config File{Path.DirectorySeparatorChar}config.json";
+		private readonly string keepOnlyRecordsPath = $"{AppDomain.CurrentDomain.BaseDirectory}Records{Path.DirectorySeparatorChar}KeepOnlyRecords.json";
+		private readonly string allRecordsPath = $"{AppDomain.CurrentDomain.BaseDirectory}Records{Path.DirectorySeparatorChar}AllRecords.json";
 		#endregion
 
 		#region debug strings

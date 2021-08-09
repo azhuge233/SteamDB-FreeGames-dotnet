@@ -21,7 +21,7 @@ namespace SteamDB_FreeGames {
 
 		public async Task SendMessage(string token, string chatID, List<FreeGameRecord> records, bool htmlMode = false) {
 			if (records.Count == 0) {
-				_logger.LogInformation("No new notifications !");
+				_logger.LogInformation($"{debugSendMessage} : No new notifications !");
 				return;
 			}
 

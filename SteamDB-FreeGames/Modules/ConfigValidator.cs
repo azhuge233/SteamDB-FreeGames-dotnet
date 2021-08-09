@@ -20,7 +20,7 @@ namespace SteamDB_FreeGames {
 				_logger.LogDebug(debugCheckValid);
 
 				//Telegram
-				if (Convert.ToBoolean(config[ConfigKeys.EnableBarkKey])) {
+				if (Convert.ToBoolean(config[ConfigKeys.EnableTelegramKey])) {
 					if (config[ConfigKeys.TelegramTokenKey] == string.Empty)
 						throw new Exception(message: "No Telegram Token provided!");
 					if (config[ConfigKeys.TelegramChatIDKey] == string.Empty)

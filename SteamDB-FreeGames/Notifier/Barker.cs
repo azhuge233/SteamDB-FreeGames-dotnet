@@ -22,7 +22,7 @@ namespace SteamDB_FreeGames.Notifier {
 		#endregion
 
 		#region debug strings
-		private readonly string debugBark = "Send notification to Bark";
+		private readonly string debugSendMessage = "Send notification to Bark";
 		#endregion
 
 		public Barker(ILogger<Barker> logger) {
@@ -30,8 +30,13 @@ namespace SteamDB_FreeGames.Notifier {
 		}
 
 		public async Task SendMessage(string address, string token, List<FreeGameRecord> records) {
+			if (records.Count == 0) {
+				_logger.LogInformation($"{debugSendMessage} : No new notifications !");
+				return;
+			}
+
 			try {
-				_logger.LogDebug(debugBark);
+				_logger.LogDebug(debugSendMessage);
 
 				var sb = new StringBuilder();
 				string url = new StringBuilder().AppendFormat(barkUrlFormat, address, token).ToString();
@@ -58,9 +63,9 @@ namespace SteamDB_FreeGames.Notifier {
 							.ToString()
 					);
 
-				_logger.LogDebug($"Done: {debugBark}");
+				_logger.LogDebug($"Done: {debugSendMessage}");
 			} catch (Exception) {
-				_logger.LogDebug($"Error: {debugBark}");
+				_logger.LogDebug($"Error: {debugSendMessage}");
 				throw;
 			} finally {
 				Dispose();

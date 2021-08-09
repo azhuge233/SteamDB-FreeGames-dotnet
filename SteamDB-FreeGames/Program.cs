@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +13,7 @@ namespace SteamDB_FreeGames {
     class Program {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private static readonly IConfigurationRoot logConfig = new ConfigurationBuilder()
-                   .SetBasePath(System.IO.Directory.GetCurrentDirectory())
+                   .SetBasePath(Directory.GetCurrentDirectory())
                    .Build();
 
         public static IServiceProvider BuildDi() {
@@ -48,8 +49,8 @@ namespace SteamDB_FreeGames {
                     var convertedInts = parser.ConvertConfigToInt(config);
 
                     // Get page source
-                    var source = await servicesProvider.GetRequiredService<Scraper>().GetSteamDBSource(convertedInts[ConfigKeys.TimeOutSecKey], convertedBools[ConfigKeys.UseHeadlessKey]);
-                    //var source = System.IO.File.ReadAllText("test.html");
+                    //var source = await servicesProvider.GetRequiredService<Scraper>().GetSteamDBSource(convertedInts[ConfigKeys.TimeOutSecKey], convertedBools[ConfigKeys.UseHeadlessKey]);
+                    var source = File.ReadAllText("test.html");
 
                     // Parse page source
                     var parseResult = parser.HtmlParse(source, jsonOp.LoadData(convertedBools[ConfigKeys.KeepGamesOnlyKey]), convertedBools[ConfigKeys.KeepGamesOnlyKey]);
