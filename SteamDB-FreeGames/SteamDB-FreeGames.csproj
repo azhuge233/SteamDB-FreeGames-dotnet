@@ -20,10 +20,10 @@
   <Target Name="CopyNlogConfigAfterBuild" AfterTargets="AfterBuild">
     <Copy SourceFiles="Config File\nlog.config" DestinationFolder="$(OutDir)" />
   </Target>
-  <Target Name="CopyNlogConfigPostBuildEvent" AfterTargets="PostBuildEvent">
-    <Copy SourceFiles="Config File\nlog.config" DestinationFolder="$(OutDir)"/>
+  <Target Name="CopyNlogConfigOnPublish" AfterTargets="Publish">
+    <Copy SourceFiles="Config File\nlog.config" DestinationFolder="$(PublishDir)" />
   </Target>
-  
+
   <ItemGroup>
     <None Update="Config File\config.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="Records\KeepOnlyRecords.json" CopyToOutputDirectory="PreserveNewest" />
