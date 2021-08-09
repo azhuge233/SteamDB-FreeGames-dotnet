@@ -18,10 +18,10 @@
   </ItemGroup>
   
   <ItemGroup>
-    <None Update="nlog.config" CopyToOutputDirectory="Always" />
-    <None Update="config.json" CopyToOutputDirectory="PreserveNewest" />
-    <None Update="KeepOnlyRecords.json" CopyToOutputDirectory="PreserveNewest" />
-    <None Update="AllRecords.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Config File\nlog.config" CopyToOutputDirectory="Always" />
+    <None Update="Config File\config.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Records\KeepOnlyRecords.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Records\AllRecords.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   
 </Project>
