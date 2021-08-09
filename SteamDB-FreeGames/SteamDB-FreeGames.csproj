@@ -20,7 +20,7 @@
   <Target Name="CopyNlogConfigAfterBuild" AfterTargets="AfterBuild">
     <Copy SourceFiles="Config File\nlog.config" DestinationFolder="$(OutDir)" />
   </Target>
-  <Target Name="CopyNlogConfigAfterRelease" AfterTargets="Publish">
+  <Target Name="CopyNlogConfigAfterRelease" AfterTargets="MSDeployPublish">
     <Copy SourceFiles="Config File\nlog.config" DestinationFolder="$(OutDir)"/>
   </Target>
   
