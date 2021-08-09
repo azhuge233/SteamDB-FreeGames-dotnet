@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Telegram.Bot;
@@ -24,6 +25,7 @@ namespace SteamDB_FreeGames {
 				return;
 			}
 
+			var sb = new StringBuilder();
 			var BotClient = new TelegramBotClient(token: token);
 
 			try {
@@ -34,7 +36,15 @@ namespace SteamDB_FreeGames {
 						text: record.ToMessage(),
 						parseMode: htmlMode ? ParseMode.Html : ParseMode.Default
 					);
+					sb.Append($"{record.SubID} ");
 				}
+
+				await BotClient.SendTextMessageAsync(
+						chatId: chatID,
+						text: sb.ToString(),
+						parseMode: htmlMode ? ParseMode.Html : ParseMode.Default
+				);
+
 				_logger.LogDebug($"Done: {debugSendMessage}");
 			} catch (Exception) {
 				_logger.LogError($"Error: {debugSendMessage}");
