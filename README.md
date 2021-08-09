@@ -37,7 +37,7 @@ Fill your Telegram Bot token and chat ID in config.json
 }
 ```
 
-Check other configuration variables in [wiki](https://github.com/azhuge233/SteamDB-FreeGames-dotnet/wiki/Config-Description).
+Check [wiki](https://github.com/azhuge233/SteamDB-FreeGames-dotnet/wiki/Config-Description) for config variable descriptions.
 
 Tested on Windows Server 2019, macOS Catalina 10.15.6.
 
