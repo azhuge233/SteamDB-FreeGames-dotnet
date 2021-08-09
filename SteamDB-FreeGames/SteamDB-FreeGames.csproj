@@ -20,7 +20,7 @@
   <Target Name="CopyNlogConfigAfterBuild" AfterTargets="AfterBuild">
     <Copy SourceFiles="Config File\nlog.config" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
   </Target>
-  <Target Name="CopyNlogConfigAfterRelease" Condition="'$(Configuration)' == 'Release'">
+  <Target Name="CopyNlogConfigAfterRelease" AfterTargets="Publish">
     <Copy SourceFiles="Config File\nlog.config" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
   </Target>
   
