@@ -45,4 +45,4 @@ Tested on Windows Server 2019, macOS Catalina 10.15.6.
 
 - [ ] Add more notify methods
     - [ ] Email
-    - [x] iOS Barker
+    - [x] iOS Bark
