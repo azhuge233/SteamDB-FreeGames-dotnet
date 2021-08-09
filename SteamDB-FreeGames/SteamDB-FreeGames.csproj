@@ -17,7 +17,10 @@
     <PackageReference Include="Telegram.Bot" Version="16.0.2" />
   </ItemGroup>
 
-  <Target Name="CopyNlogConfig" AfterTargets="AfterBuild">
+  <Target Name="CopyNlogConfigAfterBuild" AfterTargets="AfterBuild">
+    <Copy SourceFiles="Config File\nlog.config" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+  </Target>
+  <Target Name="CopyNlogConfigAfterRelease" Condition="'$(Configuration)' == 'Release'">
     <Copy SourceFiles="Config File\nlog.config" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
   </Target>
   
