@@ -12,7 +12,7 @@ namespace SteamDB_FreeGames {
 		private readonly ILogger<TgBot> _logger;
 
 		#region debug strings
-		private readonly string debugSendMessage = "Sending Message";
+		private readonly string debugSendMessage = "Send notification to Telegram";
 		#endregion
 
 		public TgBot(ILogger<TgBot> logger) {
@@ -33,7 +33,7 @@ namespace SteamDB_FreeGames {
 					_logger.LogDebug($"{debugSendMessage} : {record.Name}");
 					await BotClient.SendTextMessageAsync(
 						chatId: chatID,
-						text: record.ToMessage(),
+						text: record.ToTelegramMessage(),
 						parseMode: htmlMode ? ParseMode.Html : ParseMode.Default
 					);
 					sb.Append($"{record.SubID} ");

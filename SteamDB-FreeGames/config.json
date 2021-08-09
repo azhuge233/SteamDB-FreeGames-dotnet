@@ -1,6 +1,10 @@
 {
+  "ENABLE_TELEGRAM": true,
   "TOKEN": "",
   "CHAT_ID": "",
+  "ENABLE_BARK": false,
+  "BARK_ADDR": "https://api.day.app",
+  "BARK_TOKEN": "",
   "ENABLE_HEADLESS": true,
   "KEEP_GAMES_ONLY": true,
   "TIMEOUT_SEC": 30000

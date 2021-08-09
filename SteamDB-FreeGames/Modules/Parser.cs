@@ -14,12 +14,6 @@ namespace SteamDB_FreeGames {
 		private readonly IServiceProvider services = Program.BuildDi();
 		#endregion
 
-		#region configKeys string
-		public readonly string useHeadlessKey = "ENABLE_HEADLESS";
-		public readonly string keepGamesOnlyKey = "KEEP_GAMES_ONLY";
-		public readonly string timeOutSecKey = "TIMEOUT_SEC";
-		#endregion
-
 		#region debug strings
 		private readonly string debugHtmlParser = "Parse";
 		private readonly string debugConfigConvertToBool = "Convert config files to bool";
@@ -115,8 +109,10 @@ namespace SteamDB_FreeGames {
 			try {
 				_logger.LogDebug(debugConfigConvertToBool);
 				var dic = new Dictionary<string, bool> {
-					{ useHeadlessKey, Convert.ToBoolean(config[useHeadlessKey]) },
-					{ keepGamesOnlyKey, Convert.ToBoolean(config[keepGamesOnlyKey]) }
+					{ ConfigKeys.UseHeadlessKey, Convert.ToBoolean(config[ConfigKeys.UseHeadlessKey]) },
+					{ ConfigKeys.KeepGamesOnlyKey, Convert.ToBoolean(config[ConfigKeys.KeepGamesOnlyKey]) },
+					{ ConfigKeys.EnableBarkKey, Convert.ToBoolean(config[ConfigKeys.EnableBarkKey]) },
+					{ ConfigKeys.EnableTelegramKey, Convert.ToBoolean(config[ConfigKeys.EnableTelegramKey]) }
 				};
 				_logger.LogDebug($"Done: {debugConfigConvertToBool}");
 				return dic;
@@ -130,7 +126,7 @@ namespace SteamDB_FreeGames {
 			try {
 				_logger.LogDebug(debugConfigConvertToInt);
 				var dic = new Dictionary<string, int> {
-					{ timeOutSecKey, Convert.ToInt32(config[timeOutSecKey]) }
+					{ ConfigKeys.TimeOutSecKey, Convert.ToInt32(config[ConfigKeys.TimeOutSecKey]) }
 				};
 				_logger.LogDebug($"Done: {debugConfigConvertToInt}");
 				return dic;

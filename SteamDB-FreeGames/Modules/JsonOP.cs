@@ -58,12 +58,6 @@ namespace SteamDB_FreeGames {
 			try {
 				_logger.LogDebug(debugLoadConfig);
 				var content = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(configPath));
-				if (content["TOKEN"] == string.Empty) {
-					throw new Exception(message: "No Token provided!");
-				}
-				if (content["CHAT_ID"] == string.Empty) {
-					throw new Exception(message: "No ChatID provided!");
-				}
 				_logger.LogDebug($"Done: {debugLoadConfig}");
 				return content;
 			} catch (Exception) {
@@ -71,7 +65,6 @@ namespace SteamDB_FreeGames {
 				throw;
 			}
 		}
-
 		public void Dispose() {
 			GC.SuppressFinalize(this);
 		}

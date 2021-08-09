@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Extensions.Logging;
+using SteamDB_FreeGames.Notifier;
+using SteamDB_FreeGames.Models;
 
 namespace SteamDB_FreeGames {
     class Program {
@@ -19,6 +21,8 @@ namespace SteamDB_FreeGames {
                .AddTransient<Parser>()
                .AddTransient<TgBot>()
                .AddTransient<JsonOP>()
+               .AddTransient<Barker>()
+               .AddTransient<ConfigValidator>()
                .AddLogging(loggingBuilder => {
                    // configure Logging with NLog
                    loggingBuilder.ClearProviders();
@@ -36,27 +40,33 @@ namespace SteamDB_FreeGames {
 
                 using (servicesProvider as IDisposable) {
                     var jsonOp = servicesProvider.GetRequiredService<JsonOP>();
-                    var playwrightOp = servicesProvider.GetRequiredService<Scraper>();
-                    var tgBot = servicesProvider.GetRequiredService<TgBot>();
                     var parser = servicesProvider.GetRequiredService<Parser>();
 
                     var config = jsonOp.LoadConfig();
+                    servicesProvider.GetRequiredService<ConfigValidator>().CheckValid(config);
                     var convertedBools = parser.ConvertConfigToBool(config);
                     var convertedInts = parser.ConvertConfigToInt(config);
 
                     // Get page source
-                    var source = await playwrightOp.GetSteamDBSource(convertedInts[parser.timeOutSecKey], convertedBools[parser.useHeadlessKey]);
+                    var source = await servicesProvider.GetRequiredService<Scraper>().GetSteamDBSource(convertedInts[ConfigKeys.TimeOutSecKey], convertedBools[ConfigKeys.UseHeadlessKey]);
+                    //var source = System.IO.File.ReadAllText("test.html");
 
                     // Parse page source
-                    var parseResult = parser.HtmlParse(source, jsonOp.LoadData(convertedBools[parser.keepGamesOnlyKey]), convertedBools[parser.keepGamesOnlyKey]);
+                    var parseResult = parser.HtmlParse(source, jsonOp.LoadData(convertedBools[ConfigKeys.KeepGamesOnlyKey]), convertedBools[ConfigKeys.KeepGamesOnlyKey]);
                     var pushList = parseResult.Item1; // notification list
                     var recordList = parseResult.Item2; // new records list
+                    
+                    //Notify first, then write records
+                    // Telegram notifications
+                    if(convertedBools[ConfigKeys.EnableTelegramKey])
+                        await servicesProvider.GetRequiredService<TgBot>().SendMessage(token: config[ConfigKeys.TelegramTokenKey], chatID: config[ConfigKeys.TelegramChatIDKey], pushList, htmlMode: true);
+
+                    // Bark notifications
+                    if(convertedBools[ConfigKeys.EnableBarkKey])
+                        await servicesProvider.GetRequiredService<Barker>().SendMessage(config[ConfigKeys.BarkAddressKey], config[ConfigKeys.BarkTokenKey], pushList);
 
                     // Write new records
-                    jsonOp.WriteData(recordList, convertedBools[parser.keepGamesOnlyKey]);
-
-                    //Send notifications
-                    await tgBot.SendMessage(token: config["TOKEN"], chatID: config["CHAT_ID"], pushList, htmlMode: true);
+                    jsonOp.WriteData(recordList, convertedBools[ConfigKeys.KeepGamesOnlyKey]);
                 }
 
                 logger.Info(" - Job End -\n");
