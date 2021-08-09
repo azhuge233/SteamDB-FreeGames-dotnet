@@ -2,5 +2,6 @@
   "TOKEN": "",
   "CHAT_ID": "",
   "ENABLE_HEADLESS": true,
-  "KEEP_GAMES_ONLY": true
+  "KEEP_GAMES_ONLY": true,
+  "TIMEOUT_SEC": 30000
 }

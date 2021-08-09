@@ -8,11 +8,11 @@ namespace SteamDB_FreeGames {
 	class Scraper : IDisposable {
 		private readonly ILogger<Scraper> _logger;
 		private readonly string SteamDBUrl = "https://steamdb.info/upcoming/free/";
-		//private readonly int firstDelay = 10000;
-		private readonly int timeOut = 30000;
 
+		#region debug strings
 		private readonly string debugGetSteamSource = "Get Steam page source";
 		private readonly string debugGetSteamDBSource = "Get SteamDB page source";
+		#endregion
 
 		public Scraper(ILogger<Scraper> logger) {
 			_logger = logger;
@@ -35,7 +35,7 @@ namespace SteamDB_FreeGames {
 			}
 		}
 
-		public async Task<string> GetSteamDBSource(bool useHeadless = true) {
+		public async Task<string> GetSteamDBSource(int timeOut = 30000, bool useHeadless = true) {
 			try {
 				_logger.LogDebug(debugGetSteamDBSource);
 
@@ -51,7 +51,6 @@ namespace SteamDB_FreeGames {
 				await page.GotoAsync(SteamDBUrl);
 				await page.WaitForSelectorAsync("div.body-content");
 				await page.WaitForLoadStateAsync();
-				//Thread.Sleep(firstDelay);
 				source = await page.InnerHTMLAsync("*");
 
 				_logger.LogDebug($"Done: {debugGetSteamDBSource}");

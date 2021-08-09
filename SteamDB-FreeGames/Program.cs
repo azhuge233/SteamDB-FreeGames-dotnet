@@ -42,9 +42,10 @@ namespace SteamDB_FreeGames {
 
                     var config = jsonOp.LoadConfig();
                     var convertedBools = parser.ConvertConfigToBool(config);
+                    var convertedInts = parser.ConvertConfigToInt(config);
 
                     // Get page source
-                    var source = await playwrightOp.GetSteamDBSource(convertedBools[parser.useHeadlessKey]);
+                    var source = await playwrightOp.GetSteamDBSource(convertedInts[parser.timeOutSecKey], convertedBools[parser.useHeadlessKey]);
 
                     // Parse page source
                     var parseResult = parser.HtmlParse(source, jsonOp.LoadData(convertedBools[parser.keepGamesOnlyKey]), convertedBools[parser.keepGamesOnlyKey]);

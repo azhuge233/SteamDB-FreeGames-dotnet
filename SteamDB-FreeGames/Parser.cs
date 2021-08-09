@@ -17,11 +17,13 @@ namespace SteamDB_FreeGames {
 		#region configKeys string
 		public readonly string useHeadlessKey = "ENABLE_HEADLESS";
 		public readonly string keepGamesOnlyKey = "KEEP_GAMES_ONLY";
+		public readonly string timeOutSecKey = "TIMEOUT_SEC";
 		#endregion
 
 		#region debug strings
 		private readonly string debugHtmlParser = "Parse";
 		private readonly string debugConfigConvertToBool = "Convert config files to bool";
+		private readonly string debugConfigConvertToInt = "Convert config files to int";
 		#endregion
 
 		private readonly string SteamDBDateFormat = "yyyy-MM-dTHH:mm:ss+00:00";
@@ -120,6 +122,20 @@ namespace SteamDB_FreeGames {
 				return dic;
 			} catch (Exception) {
 				_logger.LogError($"Error: {debugConfigConvertToBool}");
+				throw;
+			}
+		}
+
+		public Dictionary<string, int> ConvertConfigToInt(Dictionary<string, string> config) {
+			try {
+				_logger.LogDebug(debugConfigConvertToInt);
+				var dic = new Dictionary<string, int> {
+					{ timeOutSecKey, Convert.ToInt32(config[timeOutSecKey]) }
+				};
+				_logger.LogDebug($"Done: {debugConfigConvertToInt}");
+				return dic;
+			} catch (Exception) {
+				_logger.LogError($"Error: {debugConfigConvertToInt}");
 				throw;
 			}
 		}
