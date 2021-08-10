@@ -36,7 +36,7 @@ namespace SteamDB_FreeGames {
 						text: record.ToTelegramMessage(),
 						parseMode: htmlMode ? ParseMode.Html : ParseMode.Default
 					);
-					sb.Append($"{record.SubID} ");
+					sb.Append(sb.Length == 0 ? record.ID : $",{record.ID}");
 				}
 
 				await BotClient.SendTextMessageAsync(

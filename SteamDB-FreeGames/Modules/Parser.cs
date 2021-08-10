@@ -44,7 +44,8 @@ namespace SteamDB_FreeGames {
 
 					var newFreeGame = new FreeGameRecord {
 						//start gather free game basic info
-						SubID = tds[1].SelectSingleNode(".//a[@href]").Attributes["href"].Value.Split('/')[2],
+						//SubID change to ID, SteamDB does not always provide game's SubID, somtimes AppID
+						ID = tds[1].SelectSingleNode(".//a[@href]").Attributes["href"].Value.Trim('/'),
 						Name = tds[1].SelectSingleNode(".//b").InnerText,
 						FreeType = tds[3].InnerHtml.ToString() == "Weekend" ? "Weekend" : "Keep",
 						Url = tds[0].SelectSingleNode(".//a[@href]").Attributes["href"].Value.Split('?')[0],
@@ -62,7 +63,7 @@ namespace SteamDB_FreeGames {
 							//add game info to recordList
 							recordList.Add(newFreeGame);
 
-							if (!records.Where(x => x.SubID == newFreeGame.SubID).Any()) { // the game is not in the previous record(a new game)
+							if (!records.Where(x => x.ID == newFreeGame.ID).Any()) { // the game is not in the previous record(a new game)
 																						   // try to get game name on Steam page 
 								var tmpDoc = services.GetRequiredService<Scraper>().GetSteamSource(newFreeGame.Url);
 
@@ -81,7 +82,7 @@ namespace SteamDB_FreeGames {
 
 						recordList.Add(newFreeGame);
 
-						if (!records.Where(x => x.SubID == newFreeGame.SubID).Any()) { // the game is not in the previous record(a new game)
+						if (!records.Where(x => x.ID == newFreeGame.ID).Any()) { // the game is not in the previous record(a new game)
 																					   // try to get game name on Steam page 
 							var tmpDoc = services.GetRequiredService<Scraper>().GetSteamSource(newFreeGame.Url);
 
