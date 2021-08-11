@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Extensions.Logging;
 using SteamDB_FreeGames.Notifier;
-using SteamDB_FreeGames.Models;
 
 namespace SteamDB_FreeGames {
     class Program {
@@ -45,29 +44,27 @@ namespace SteamDB_FreeGames {
 
                     var config = jsonOp.LoadConfig();
                     servicesProvider.GetRequiredService<ConfigValidator>().CheckValid(config);
-                    var convertedBools = parser.ConvertConfigToBool(config);
-                    var convertedInts = parser.ConvertConfigToInt(config);
 
                     // Get page source
-                    var source = await servicesProvider.GetRequiredService<Scraper>().GetSteamDBSource(convertedInts[ConfigKeys.TimeOutSecKey], convertedBools[ConfigKeys.UseHeadlessKey]);
+                    var source = await servicesProvider.GetRequiredService<Scraper>().GetSteamDBSource(config.TimeOutMilliSecond, config.EnableHeadless);
                     //var source = File.ReadAllText("test.html");
 
                     // Parse page source
-                    var parseResult = parser.HtmlParse(source, jsonOp.LoadData(convertedBools[ConfigKeys.KeepGamesOnlyKey]), convertedBools[ConfigKeys.KeepGamesOnlyKey]);
+                    var parseResult = parser.HtmlParse(source, jsonOp.LoadData(config.KeepGamesOnly), config.KeepGamesOnly);
                     var pushList = parseResult.Item1; // notification list
                     var recordList = parseResult.Item2; // new records list
                     
                     //Notify first, then write records
                     // Telegram notifications
-                    if(convertedBools[ConfigKeys.EnableTelegramKey])
-                        await servicesProvider.GetRequiredService<TgBot>().SendMessage(token: config[ConfigKeys.TelegramTokenKey], chatID: config[ConfigKeys.TelegramChatIDKey], pushList, htmlMode: true);
+                    if(config.EnableTelegram)
+                        await servicesProvider.GetRequiredService<TgBot>().SendMessage(token: config.TelegramToken, chatID: config.TelegramChatID, pushList, htmlMode: true);
 
                     // Bark notifications
-                    if(convertedBools[ConfigKeys.EnableBarkKey])
-                        await servicesProvider.GetRequiredService<Barker>().SendMessage(config[ConfigKeys.BarkAddressKey], config[ConfigKeys.BarkTokenKey], pushList);
+                    if(config.EnableBark)
+                        await servicesProvider.GetRequiredService<Barker>().SendMessage(config.BarkAddress, config.BarkToken, pushList);
 
                     // Write new records
-                    jsonOp.WriteData(recordList, convertedBools[ConfigKeys.KeepGamesOnlyKey]);
+                    jsonOp.WriteData(recordList, config.KeepGamesOnly);
                 }
 
                 logger.Info(" - Job End -\n");

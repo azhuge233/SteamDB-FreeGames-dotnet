@@ -54,10 +54,10 @@ namespace SteamDB_FreeGames {
 			}
 		}
 
-		public Dictionary<string, string> LoadConfig() {
+		public Config LoadConfig() {
 			try {
 				_logger.LogDebug(debugLoadConfig);
-				var content = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(configPath));
+				var content = JsonConvert.DeserializeObject<Config>(File.ReadAllText(configPath));
 				_logger.LogDebug($"Done: {debugLoadConfig}");
 				return content;
 			} catch (Exception) {

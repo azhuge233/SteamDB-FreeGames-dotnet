@@ -16,8 +16,6 @@ namespace SteamDB_FreeGames {
 
 		#region debug strings
 		private readonly string debugHtmlParser = "Parse";
-		private readonly string debugConfigConvertToBool = "Convert config files to bool";
-		private readonly string debugConfigConvertToInt = "Convert config files to int";
 		#endregion
 
 		private readonly string SteamDBDateFormat = "yyyy-MM-dTHH:mm:ss+00:00";
@@ -64,7 +62,7 @@ namespace SteamDB_FreeGames {
 							recordList.Add(newFreeGame);
 
 							if (!records.Where(x => x.ID == newFreeGame.ID).Any()) { // the game is not in the previous record(a new game)
-																						   // try to get game name on Steam page 
+																					 // try to get game name on Steam page 
 								var tmpDoc = services.GetRequiredService<Scraper>().GetSteamSource(newFreeGame.Url);
 
 								var steamName = tmpDoc.DocumentNode.CssSelect("div.apphub_AppName").ToArray();
@@ -83,7 +81,7 @@ namespace SteamDB_FreeGames {
 						recordList.Add(newFreeGame);
 
 						if (!records.Where(x => x.ID == newFreeGame.ID).Any()) { // the game is not in the previous record(a new game)
-																					   // try to get game name on Steam page 
+																				 // try to get game name on Steam page 
 							var tmpDoc = services.GetRequiredService<Scraper>().GetSteamSource(newFreeGame.Url);
 
 							var steamName = tmpDoc.DocumentNode.CssSelect("div.apphub_AppName").ToArray();
@@ -103,37 +101,8 @@ namespace SteamDB_FreeGames {
 			} catch (Exception) {
 				_logger.LogError($"Error: {debugHtmlParser}");
 				throw;
-			}
-		}
-
-		public Dictionary<string, bool> ConvertConfigToBool(Dictionary<string, string> config) {
-			try {
-				_logger.LogDebug(debugConfigConvertToBool);
-				var dic = new Dictionary<string, bool> {
-					{ ConfigKeys.UseHeadlessKey, Convert.ToBoolean(config[ConfigKeys.UseHeadlessKey]) },
-					{ ConfigKeys.KeepGamesOnlyKey, Convert.ToBoolean(config[ConfigKeys.KeepGamesOnlyKey]) },
-					{ ConfigKeys.EnableBarkKey, Convert.ToBoolean(config[ConfigKeys.EnableBarkKey]) },
-					{ ConfigKeys.EnableTelegramKey, Convert.ToBoolean(config[ConfigKeys.EnableTelegramKey]) }
-				};
-				_logger.LogDebug($"Done: {debugConfigConvertToBool}");
-				return dic;
-			} catch (Exception) {
-				_logger.LogError($"Error: {debugConfigConvertToBool}");
-				throw;
-			}
-		}
-
-		public Dictionary<string, int> ConvertConfigToInt(Dictionary<string, string> config) {
-			try {
-				_logger.LogDebug(debugConfigConvertToInt);
-				var dic = new Dictionary<string, int> {
-					{ ConfigKeys.TimeOutSecKey, Convert.ToInt32(config[ConfigKeys.TimeOutSecKey]) }
-				};
-				_logger.LogDebug($"Done: {debugConfigConvertToInt}");
-				return dic;
-			} catch (Exception) {
-				_logger.LogError($"Error: {debugConfigConvertToInt}");
-				throw;
+			} finally {
+				Dispose();
 			}
 		}
 

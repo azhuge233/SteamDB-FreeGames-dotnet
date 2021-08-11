@@ -1,11 +1,11 @@
 {
-  "ENABLE_TELEGRAM": true,
-  "TOKEN": "",
-  "CHAT_ID": "",
-  "ENABLE_BARK": false,
-  "BARK_ADDR": "https://api.day.app",
-  "BARK_TOKEN": "",
-  "ENABLE_HEADLESS": true,
-  "KEEP_GAMES_ONLY": true,
-  "TIMEOUT_SEC": 30000
+  "EnableTelegram": true,
+  "TelegramToken": "",
+  "TelegramChatID": "",
+  "EnableBark": false,
+  "BarkAddress": "https://api.day.app",
+  "BarkToken": "",
+  "EnableHeadless": true,
+  "KeepGamesOnly": true,
+  "TimeOutMilliSecond": 30000
 }
