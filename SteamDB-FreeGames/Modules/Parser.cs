@@ -6,12 +6,13 @@ using ScrapySharp.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using SteamDB_FreeGames.Models;
+using SteamDB_FreeGames.Modules;
 
 namespace SteamDB_FreeGames {
 	class Parser : IDisposable {
 		#region DI variable
 		private readonly ILogger<Parser> _logger;
-		private readonly IServiceProvider services = Program.BuildDi();
+		private readonly IServiceProvider services = DI.BuildDi();
 		#endregion
 
 		#region debug strings
