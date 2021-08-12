@@ -13,13 +13,14 @@ namespace SteamDB_FreeGames.Modules {
            .Build();
         public static IServiceProvider BuildDiAll() {
             return new ServiceCollection()
-               .AddTransient<Scraper>()
-               .AddTransient<Parser>()
-               .AddTransient<TgBot>()
                .AddTransient<JsonOP>()
-               .AddTransient<Barker>()
-               .AddTransient<NotifyOP>()
                .AddTransient<ConfigValidator>()
+               .AddTransient<Scraper>()
+               .AddTransient<Parser>()          
+               .AddTransient<NotifyOP>()
+               .AddTransient<Barker>()
+               .AddTransient<TgBot>()
+               .AddTransient<Email>()
                .AddLogging(loggingBuilder => {
                    // configure Logging with NLog
                    loggingBuilder.ClearProviders();
@@ -33,6 +34,7 @@ namespace SteamDB_FreeGames.Modules {
             return new ServiceCollection()
                .AddTransient<TgBot>()
                .AddTransient<Barker>()
+               .AddTransient<Email>()
                .AddLogging(loggingBuilder => {
                    // configure Logging with NLog
                    loggingBuilder.ClearProviders();

@@ -34,6 +34,20 @@ namespace SteamDB_FreeGames {
 						throw new Exception(message: "No Bark Token provided!");
 				}
 
+				//Email
+				if (config.EnableEmail) {
+					if (config.FromEmailAddress == string.Empty)
+						throw new Exception(message: "No from email address provided!");
+					if (config.ToEmailAddress == string.Empty)
+						throw new Exception(message: "No to email address provided!");
+					if (config.SMTPServer == string.Empty)
+						throw new Exception(message: "No SMTP server provided!");
+					if (config.AuthAccount == string.Empty)
+						throw new Exception(message: "No email auth account provided!");
+					if (config.AuthPassword == string.Empty)
+						throw new Exception(message: "No email auth password provided!");
+				}
+
 				_logger.LogDebug($"Done: {debugCheckValid}");
 			} catch (Exception) {
 				_logger.LogError($"Error: {debugCheckValid}");

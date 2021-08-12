@@ -5,6 +5,13 @@
   "EnableBark": false,
   "BarkAddress": "https://api.day.app",
   "BarkToken": "",
+  "EnableEmail": false,
+  "SMTPServer": "",
+  "SMTPPort": 465,
+  "FromEmailAddress": "",
+  "ToEmailAddress": "",
+  "AuthAccount": "",
+  "AuthPassword": "",
   "EnableHeadless": true,
   "KeepGamesOnly": true,
   "TimeOutMilliSecond": 30000

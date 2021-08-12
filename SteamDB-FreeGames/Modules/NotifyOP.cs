@@ -35,6 +35,11 @@ namespace SteamDB_FreeGames.Modules {
 					await services.GetRequiredService<Barker>().SendMessage(config.BarkAddress, config.BarkToken, pushList);
 				else _logger.LogInformation(debugDisabledFormat, "Bark");
 
+				//Email notifications
+				if (config.EnableEmail)
+					await services.GetRequiredService<Email>().SendMessage(config.FromEmailAddress, config.ToEmailAddress, config.SMTPServer, config.SMTPPort, config.AuthAccount, config.AuthPassword, pushList);
+				else _logger.LogInformation(debugDisabledFormat, "Email");
+
 				_logger.LogDebug($"Done: {debugNotify}");
 			} catch (Exception) {
 				_logger.LogError($"Error: {debugNotify}");
