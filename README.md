@@ -2,6 +2,8 @@
 
 Fetch free games info from SteamDB, notifies on Telegram, Email and Bark.
 
+Demo Telegram Channel [@azhuge233_FreeGames](https://t.me/azhuge233_FreeGames)
+
 **Seems that SteamDB really don't want people scraping their site, check [Things should be aware of](https://github.com/azhuge233/SteamDB-FreeGames-dotnet/blob/master/Things%20should%20be%20aware%20of.md) before using.**
 
 ## Build
@@ -44,5 +46,3 @@ Tested on Windows Server 2019, macOS Catalina 10.15.6.
     - [https://github.com/azhuge233/IndiegalaFreebieNotifier](https://github.com/azhuge233/IndiegalaFreebieNotifier)
 - GOG
     - [https://github.com/azhuge233/GOGGiveawayNotifier](https://github.com/azhuge233/GOGGiveawayNotifier)
-
-Demo Telegram Channel [@azhuge233_FreeGames](https://t.me/azhuge233_FreeGames)
