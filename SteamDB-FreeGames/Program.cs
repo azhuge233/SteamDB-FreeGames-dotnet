@@ -10,7 +10,7 @@ namespace SteamDB_FreeGames {
 
         static async Task Main() {
             try {
-                var servicesProvider = DI.BuildDi();
+                var servicesProvider = DI.BuildDiAll();
 
                 logger.Info(" - Start Job -");
 

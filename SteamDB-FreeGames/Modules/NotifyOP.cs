@@ -9,7 +9,7 @@ using SteamDB_FreeGames.Models;
 namespace SteamDB_FreeGames.Modules {
 	class NotifyOP:IDisposable {
 		private readonly ILogger<NotifyOP> _logger;
-		private readonly IServiceProvider services = DI.BuildDi();
+		private readonly IServiceProvider services = DI.BuildDiNotifierOnly();
 
 		#region debug strings
 		private readonly string debugNotify = "Notify";

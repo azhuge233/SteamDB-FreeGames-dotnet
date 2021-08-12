@@ -11,7 +11,7 @@ namespace SteamDB_FreeGames.Modules {
         private static readonly IConfigurationRoot logConfig = new ConfigurationBuilder()
            .SetBasePath(Directory.GetCurrentDirectory())
            .Build();
-        public static IServiceProvider BuildDi() {
+        public static IServiceProvider BuildDiAll() {
             return new ServiceCollection()
                .AddTransient<Scraper>()
                .AddTransient<Parser>()
@@ -20,6 +20,31 @@ namespace SteamDB_FreeGames.Modules {
                .AddTransient<Barker>()
                .AddTransient<NotifyOP>()
                .AddTransient<ConfigValidator>()
+               .AddLogging(loggingBuilder => {
+                   // configure Logging with NLog
+                   loggingBuilder.ClearProviders();
+                   loggingBuilder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                   loggingBuilder.AddNLog(logConfig);
+               })
+               .BuildServiceProvider();
+        }
+
+        public static IServiceProvider BuildDiNotifierOnly() {
+            return new ServiceCollection()
+               .AddTransient<TgBot>()
+               .AddTransient<Barker>()
+               .AddLogging(loggingBuilder => {
+                   // configure Logging with NLog
+                   loggingBuilder.ClearProviders();
+                   loggingBuilder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                   loggingBuilder.AddNLog(logConfig);
+               })
+               .BuildServiceProvider();
+        }
+
+        public static IServiceProvider BuildDiScraperOnly() {
+            return new ServiceCollection()
+               .AddTransient<Scraper>()
                .AddLogging(loggingBuilder => {
                    // configure Logging with NLog
                    loggingBuilder.ClearProviders();
