@@ -57,11 +57,16 @@ namespace SteamDB_FreeGames.Notifier {
 			}
 		}
 
-		public async Task SendMessage(string fromAddress, string toAddress, string smtpServer, int smtpPort, string authAccount, string authPassword, List<FreeGameRecord> pushList) {
+		public async Task SendMessage(string fromAddress, string toAddress, string smtpServer, int smtpPort, string authAccount, string authPassword, List<FreeGameRecord> records) {
+			if (records.Count == 0) {
+				_logger.LogInformation($"{debugSendMessage} : No new notifications !");
+				return;
+			}
+
 			try {
 				_logger.LogDebug(debugSendMessage);
 
-				var message = CreateMessage(pushList, fromAddress, toAddress);
+				var message = CreateMessage(records, fromAddress, toAddress);
 
 				using var client = new SmtpClient();
 				client.Connect(smtpServer, smtpPort, true);
