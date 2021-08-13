@@ -67,7 +67,7 @@ namespace SteamDB_FreeGames {
 					parseResult.Records.Add(newFreeGame);
 
 					// the game is not in the previous record
-					if (records.Count == 0 || !records.Contains(newFreeGame)) {
+					if (records.Count == 0 || !records.Exists(record => record.Name == newFreeGame.Name && record.ID == newFreeGame.ID && record.FreeType == newFreeGame.FreeType && record.StartTime == newFreeGame.StartTime && record.EndTime == newFreeGame.EndTime )) {
 						if (newFreeGame.FreeType == keepGameString) {
 							parseResult.PushListKeepOnly.Add(newFreeGame);
 							_logger.LogInformation(infoAddToPushListKeepOnly, newFreeGame.Name);
