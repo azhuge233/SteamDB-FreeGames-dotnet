@@ -13,6 +13,6 @@
   "AuthAccount": "",
   "AuthPassword": "",
   "EnableHeadless": true,
-  "KeepGamesOnly": true,
+  "NotifyKeepGamesOnly": true,
   "TimeOutMilliSecond": 30000
 }

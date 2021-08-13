@@ -25,13 +25,13 @@ namespace SteamDB_FreeGames {
                     //var source = System.IO.File.ReadAllText("test.html");
 
                     // Parse page source
-                    var parseResult = servicesProvider.GetRequiredService<Parser>().HtmlParse(source, jsonOp.LoadData(config.KeepGamesOnly), config.KeepGamesOnly);
+                    var parseResult = servicesProvider.GetRequiredService<Parser>().HtmlParse(source, jsonOp.LoadData());
 
                     //Notify first, then write records
-                    await servicesProvider.GetRequiredService<NotifyOP>().Notify(config, parseResult.Item1);
+                    await servicesProvider.GetRequiredService<NotifyOP>().Notify(config, config.NotifyKeepGamesOnly ? parseResult.PushListKeepOnly : parseResult.PushListAll);
 
                     // Write new records
-                    jsonOp.WriteData(parseResult.Item2, config.KeepGamesOnly);
+                    jsonOp.WriteData(parseResult.Records);
                 }
 
                 logger.Info(" - Job End -\n");

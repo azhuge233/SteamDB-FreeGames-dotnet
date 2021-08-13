@@ -1,7 +1,7 @@
 ﻿namespace SteamDB_FreeGames.Models {
 	public class Config {
 		public bool EnableHeadless { get; set; }
-		public bool KeepGamesOnly { get; set; }
+		public bool NotifyKeepGamesOnly { get; set; }
 		public int TimeOutMilliSecond { get; set; }
 
 		public bool EnableTelegram { get; set; }

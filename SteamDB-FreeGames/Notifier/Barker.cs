@@ -36,13 +36,12 @@ namespace SteamDB_FreeGames.Notifier {
 			}
 
 			try {
-				_logger.LogDebug(debugSendMessage);
-
 				var sb = new StringBuilder();
 				string url = new StringBuilder().AppendFormat(barkUrlFormat, address, token).ToString();
 				var webGet = new HtmlWeb();
 
 				foreach (var record in records) {
+					_logger.LogDebug($"{debugSendMessage} : {record.Name}");
 					sb.Append(sb.Length == 0 ? record.ID : $",{record.ID}");
 					await webGet.LoadFromWebAsync(
 						new StringBuilder()

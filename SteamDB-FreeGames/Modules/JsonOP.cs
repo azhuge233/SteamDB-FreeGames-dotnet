@@ -11,8 +11,7 @@ namespace SteamDB_FreeGames {
 
 		#region path strings
 		private readonly string configPath = $"{AppDomain.CurrentDomain.BaseDirectory}Config File{Path.DirectorySeparatorChar}config.json";
-		private readonly string keepOnlyRecordsPath = $"{AppDomain.CurrentDomain.BaseDirectory}Records{Path.DirectorySeparatorChar}KeepOnlyRecords.json";
-		private readonly string allRecordsPath = $"{AppDomain.CurrentDomain.BaseDirectory}Records{Path.DirectorySeparatorChar}AllRecords.json";
+		private readonly string recordsPath = $"{AppDomain.CurrentDomain.BaseDirectory}Records{Path.DirectorySeparatorChar}Records.json";
 		#endregion
 
 		#region debug strings
@@ -25,13 +24,13 @@ namespace SteamDB_FreeGames {
 			_logger = logger;
 		}
 
-		public void WriteData(List<FreeGameRecord> data, bool keepGamesOnly) {
+		public void WriteData(List<FreeGameRecord> data) {
 			try {
 				if (data.Count > 0) {
 					_logger.LogDebug(debugWrite);
 					string json = JsonConvert.SerializeObject(data, Formatting.Indented);
-					File.WriteAllText(keepGamesOnly ? keepOnlyRecordsPath : allRecordsPath, string.Empty);
-					File.WriteAllText(keepGamesOnly ? keepOnlyRecordsPath : allRecordsPath, json);
+					File.WriteAllText(recordsPath, string.Empty);
+					File.WriteAllText(recordsPath, json);
 					_logger.LogDebug($"Done: {debugWrite}");
 				} else _logger.LogDebug("No records detected, quit writing records");
 			} catch (Exception) {
@@ -42,10 +41,10 @@ namespace SteamDB_FreeGames {
 			}
 		}
 
-		public List<FreeGameRecord> LoadData(bool keepGamesOnly) {
+		public List<FreeGameRecord> LoadData() {
 			try {
 				_logger.LogDebug(debugLoadRecords);
-				var content = JsonConvert.DeserializeObject<List<FreeGameRecord>>(File.ReadAllText(keepGamesOnly ? keepOnlyRecordsPath : allRecordsPath));
+				var content = JsonConvert.DeserializeObject<List<FreeGameRecord>>(File.ReadAllText(recordsPath));
 				_logger.LogDebug($"Done: {debugLoadRecords}");
 				return content;
 			} catch (Exception) {

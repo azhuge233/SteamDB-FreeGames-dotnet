@@ -2,44 +2,53 @@
 using System.Linq;
 using System.Collections.Generic;
 using HtmlAgilityPack;
-using ScrapySharp.Extensions;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
 using SteamDB_FreeGames.Models;
-using SteamDB_FreeGames.Modules;
 
 namespace SteamDB_FreeGames {
 	class Parser : IDisposable {
 		#region DI variable
 		private readonly ILogger<Parser> _logger;
-		private readonly IServiceProvider services = DI.BuildDiScraperOnly();
 		#endregion
 
 		#region debug strings
 		private readonly string debugHtmlParser = "Parse";
+		private readonly string infoGameFound = "Found game: {0}. Freetype: {1}";
+		private readonly string infoAddToPushListKeepOnly = "Added game {0} to keep only push list";
+		private readonly string infoAddToPushListAll = "Added game {0} to all push list";
+		private readonly string infoFoundInPreviousRecords = "{0} is found in previous records, stop adding in push list";
 		#endregion
 
+		#region XPath strings
+		private readonly string XPathRecord = ".//div[@class=\'container\']//table//tr[@class=\'app\']";
+		private readonly string XPathtds = ".//td";
+		#endregion
+
+		#region parser stings
 		private readonly string SteamDBDateFormat = "yyyy-MM-dTHH:mm:ss+00:00";
+		private readonly string keepGameString = "Keep";
+		private readonly string hiddenAttribute = "hidden";
+		#endregion
 
 		public Parser(ILogger<Parser> logger) {
 			_logger = logger;
 		}
 
-		public Tuple<List<FreeGameRecord>, List<FreeGameRecord>> HtmlParse(string source, List<FreeGameRecord> records, bool keepGamesOnly = true) {
+		public ParseResult HtmlParse(string source, List<FreeGameRecord> records) {
 			try {
 				_logger.LogDebug(debugHtmlParser);
 
-				var pushList = new List<FreeGameRecord>(); // notification list
-				var recordList = new List<FreeGameRecord>(); // new records list
+				var parseResult = new ParseResult();
 				var htmlDoc = new HtmlDocument();
 				htmlDoc.LoadHtml(source);
 
-				var apps = htmlDoc.DocumentNode.CssSelect("table tr.app");
+				var apps = htmlDoc.DocumentNode.SelectNodes(XPathRecord);
+				
 				foreach (var each in apps) {
 					//skip the hidden trap row
-					if (each.Attributes.HasKeyIgnoreCase("hidden")) continue;
+					if (each.Attributes.Contains(hiddenAttribute)) continue;
 
-					var tds = each.CssSelect("td").ToArray();
+					var tds = each.SelectNodes(XPathtds).ToList();
 
 					var newFreeGame = new FreeGameRecord {
 						//start gather free game basic info
@@ -52,53 +61,24 @@ namespace SteamDB_FreeGames {
 						EndTime = tds[5].Attributes["data-time"] == null ? DateTime.Now : DateTime.ParseExact(tds[5].Attributes["data-time"].Value.ToString(), SteamDBDateFormat, System.Globalization.CultureInfo.InvariantCulture).AddHours(8)
 					};
 
-					if (keepGamesOnly) {
+					_logger.LogInformation(infoGameFound, newFreeGame.Name, newFreeGame.FreeType);
 
-						_logger.LogDebug("Found game: {0}. Freetype: {1}", newFreeGame.Name, newFreeGame.FreeType);
+					//add game info to recordList
+					parseResult.Records.Add(newFreeGame);
 
-						if (newFreeGame.FreeType == "Keep") {
-							_logger.LogInformation("Found free game: {0}", newFreeGame.Name);
-
-							//add game info to recordList
-							recordList.Add(newFreeGame);
-
-							if (!records.Where(x => x.ID == newFreeGame.ID).Any()) { // the game is not in the previous record(a new game)
-																					 // try to get game name on Steam page 
-								var tmpDoc = services.GetRequiredService<Scraper>().GetSteamSource(newFreeGame.Url);
-
-								var steamName = tmpDoc.DocumentNode.CssSelect("div.apphub_AppName").ToArray();
-								if (steamName.Length > 0)
-									newFreeGame.Name = steamName[0].InnerText;
-
-								pushList.Add(newFreeGame);
-								_logger.LogInformation("Added game {0} in push list", newFreeGame.Name);
-							} else {
-								_logger.LogInformation("{0} is found in previous records, stop adding in push list", newFreeGame.Name);
-							}
+					// the game is not in the previous record
+					if (records.Count == 0 || !records.Select(x => x == newFreeGame).Any()) {
+						if (newFreeGame.FreeType == keepGameString) {
+							parseResult.PushListKeepOnly.Add(newFreeGame);
+							_logger.LogInformation(infoAddToPushListKeepOnly, newFreeGame.Name);
 						}
-					} else {
-						_logger.LogInformation("Found game: {0}. Freetype: {1}", newFreeGame.Name, newFreeGame.FreeType);
-
-						recordList.Add(newFreeGame);
-
-						if (!records.Where(x => x.ID == newFreeGame.ID).Any()) { // the game is not in the previous record(a new game)
-																				 // try to get game name on Steam page 
-							var tmpDoc = services.GetRequiredService<Scraper>().GetSteamSource(newFreeGame.Url);
-
-							var steamName = tmpDoc.DocumentNode.CssSelect("div.apphub_AppName").ToArray();
-							if (steamName.Length > 0)
-								newFreeGame.Name = steamName[0].InnerText;
-
-							pushList.Add(newFreeGame);
-							_logger.LogInformation("Added game {0} in push list", newFreeGame.Name);
-						} else {
-							_logger.LogInformation("{0} is found in previous records, stop adding in push list", newFreeGame.Name);
-						}
-					}
+						parseResult.PushListAll.Add(newFreeGame);
+						_logger.LogInformation(infoAddToPushListAll, newFreeGame.Name);
+					} else _logger.LogInformation(infoFoundInPreviousRecords, newFreeGame.Name);
 				}
 
 				_logger.LogDebug($"Done: {debugHtmlParser}");
-				return new Tuple<List<FreeGameRecord>, List<FreeGameRecord>>(pushList, recordList);
+				return parseResult;
 			} catch (Exception) {
 				_logger.LogError($"Error: {debugHtmlParser}");
 				throw;
