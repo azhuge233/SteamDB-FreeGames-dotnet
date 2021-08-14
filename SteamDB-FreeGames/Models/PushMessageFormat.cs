@@ -27,5 +27,8 @@
 			"&copy={0}" +
 			"&isArchive=1" +
 			"&sound=calypso";
+
+		public static readonly string emailTitleFormat = "{0} new free game(s) - SteamDB-FreeGames";
+		public static readonly string emailBodyFormat = "<br>{0}";
 	}
 }

@@ -11,11 +11,6 @@ namespace SteamDB_FreeGames.Notifier {
 	class Email: INotifiable {
 		private readonly ILogger<Email> _logger;
 
-		#region message format
-		private readonly string titleFormat = "{0} new free game(s) - SteamDB-FreeGames";
-		private readonly string bodyFormat = "<br>{0}";
-		#endregion
-
 		#region debug strings
 		private readonly string debugSendMessage = "Send notification to Email";
 		private readonly string debugCreateMessage = "Create notification message";
@@ -37,12 +32,12 @@ namespace SteamDB_FreeGames.Notifier {
 				var sb = new StringBuilder();
 				var sbSubID = new StringBuilder();
 
-				message.Subject = sb.AppendFormat(titleFormat, pushList.Count).ToString();
+				message.Subject = sb.AppendFormat(PushMessageFormat.emailTitleFormat, pushList.Count).ToString();
 				sb.Clear();
 
 				pushList.ForEach(record => {
 					sbSubID.Append(sbSubID.Length == 0 ? record.ID : $",{record.ID}");
-					sb.AppendFormat(bodyFormat, record.ToEmailMessage());
+					sb.AppendFormat(PushMessageFormat.emailBodyFormat, record.ToEmailMessage());
 				});
 
 				message.Body = new TextPart("html") {
