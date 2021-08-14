@@ -19,5 +19,13 @@
 			"链接: <a href=\"{3}\" > {4}</a><br>" +
 			"开始时间: {5}<br>" +
 			"结束时间: {6}</p>";
+
+		public static readonly string barkUrlFormat = "{0}/{1}/";
+		public static readonly string barkUrlTitle = "SteamDB-FreeGames/";
+		public static readonly string barkUrlArgs =
+			"?group=steamdbfreegames" +
+			"&copy={0}" +
+			"&isArchive=1" +
+			"&sound=calypso";
 	}
 }

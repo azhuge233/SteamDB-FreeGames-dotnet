@@ -11,16 +11,6 @@ namespace SteamDB_FreeGames.Notifier {
 	class Barker: INotifiable {
 		private readonly ILogger<Barker> _logger;
 
-		#region push message format strings
-		private readonly string barkUrlFormat = "{0}/{1}/";
-		private readonly string barkUrlTitle = "SteamDB-FreeGames/";
-		private readonly string barkUrlArgs = 
-			"?group=steamdbfreegames" +
-			"&copy={0}" +
-			"&isArchive=1" +
-			"&sound=calypso";
-		#endregion
-
 		#region debug strings
 		private readonly string debugSendMessage = "Send notification to Bark";
 		#endregion
@@ -37,7 +27,7 @@ namespace SteamDB_FreeGames.Notifier {
 
 			try {
 				var sb = new StringBuilder();
-				string url = new StringBuilder().AppendFormat(barkUrlFormat, config.BarkAddress, config.BarkToken).ToString();
+				string url = new StringBuilder().AppendFormat(PushMessageFormat.barkUrlFormat, config.BarkAddress, config.BarkToken).ToString();
 				var webGet = new HtmlWeb();
 
 				foreach (var record in records) {
@@ -46,9 +36,9 @@ namespace SteamDB_FreeGames.Notifier {
 					await webGet.LoadFromWebAsync(
 						new StringBuilder()
 							.Append(url)
-							.Append(barkUrlTitle)
+							.Append(PushMessageFormat.barkUrlTitle)
 							.Append(HttpUtility.UrlEncode(record.ToBarkMessage()))
-							.Append(new StringBuilder().AppendFormat(barkUrlArgs, record.ID))
+							.Append(new StringBuilder().AppendFormat(PushMessageFormat.barkUrlArgs, record.ID))
 							.ToString()
 					);
 				}
@@ -56,9 +46,9 @@ namespace SteamDB_FreeGames.Notifier {
 				await webGet.LoadFromWebAsync(
 						new StringBuilder()
 							.Append(url)
-							.Append(barkUrlTitle)
+							.Append(PushMessageFormat.barkUrlTitle)
 							.Append(HttpUtility.UrlEncode(sb.ToString()))
-							.Append(new StringBuilder().AppendFormat(barkUrlArgs, sb.ToString()))
+							.Append(new StringBuilder().AppendFormat(PushMessageFormat.barkUrlArgs, sb.ToString()))
 							.ToString()
 					);
 
