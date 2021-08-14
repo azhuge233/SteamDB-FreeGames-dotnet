@@ -8,7 +8,7 @@ using MimeKit;
 using SteamDB_FreeGames.Models;
 
 namespace SteamDB_FreeGames.Notifier {
-	class Email:IDisposable {
+	class Email: INotifiable {
 		private readonly ILogger<Email> _logger;
 
 		#region message format
@@ -57,7 +57,7 @@ namespace SteamDB_FreeGames.Notifier {
 			}
 		}
 
-		public async Task SendMessage(string fromAddress, string toAddress, string smtpServer, int smtpPort, string authAccount, string authPassword, List<FreeGameRecord> records) {
+		public async Task SendMessage(NotifyConfig config, List<FreeGameRecord> records) {
 			if (records.Count == 0) {
 				_logger.LogInformation($"{debugSendMessage} : No new notifications !");
 				return;
@@ -66,11 +66,11 @@ namespace SteamDB_FreeGames.Notifier {
 			try {
 				_logger.LogDebug(debugSendMessage);
 
-				var message = CreateMessage(records, fromAddress, toAddress);
+				var message = CreateMessage(records, config.FromEmailAddress, config.ToEmailAddress);
 
 				using var client = new SmtpClient();
-				client.Connect(smtpServer, smtpPort, true);
-				client.Authenticate(authAccount, authPassword);
+				client.Connect(config.SMTPServer, config.SMTPPort, true);
+				client.Authenticate(config.AuthAccount, config.AuthPassword);
 				await client.SendAsync(message);
 				client.Disconnect(true);
 

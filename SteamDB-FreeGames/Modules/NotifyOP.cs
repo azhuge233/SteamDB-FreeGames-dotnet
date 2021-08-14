@@ -21,23 +21,23 @@ namespace SteamDB_FreeGames.Modules {
 			_logger = logger;
 		}
 
-		public async Task Notify(Config config, List<FreeGameRecord> pushList) {
+		public async Task Notify(NotifyConfig config, List<FreeGameRecord> pushList) {
 			try {
 				_logger.LogDebug(debugNotify);
 
 				// Telegram notifications
 				if (config.EnableTelegram)
-					await services.GetRequiredService<TgBot>().SendMessage(token: config.TelegramToken, chatID: config.TelegramChatID, pushList, htmlMode: true);
+					await services.GetRequiredService<TgBot>().SendMessage(config, pushList);
 				else _logger.LogInformation(debugDisabledFormat, "Telegram");
 
 				// Bark notifications
 				if (config.EnableBark)
-					await services.GetRequiredService<Barker>().SendMessage(config.BarkAddress, config.BarkToken, pushList);
+					await services.GetRequiredService<Barker>().SendMessage(config, pushList);
 				else _logger.LogInformation(debugDisabledFormat, "Bark");
 
 				//Email notifications
 				if (config.EnableEmail)
-					await services.GetRequiredService<Email>().SendMessage(config.FromEmailAddress, config.ToEmailAddress, config.SMTPServer, config.SMTPPort, config.AuthAccount, config.AuthPassword, pushList);
+					await services.GetRequiredService<Email>().SendMessage(config, pushList);
 				else _logger.LogInformation(debugDisabledFormat, "Email");
 
 				_logger.LogDebug($"Done: {debugNotify}");

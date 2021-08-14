@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using SteamDB_FreeGames.Models;
 
 namespace SteamDB_FreeGames.Notifier {
-	class Barker: IDisposable {
+	class Barker: INotifiable {
 		private readonly ILogger<Barker> _logger;
 
 		#region push message format strings
@@ -29,7 +29,7 @@ namespace SteamDB_FreeGames.Notifier {
 			_logger = logger;
 		}
 
-		public async Task SendMessage(string address, string token, List<FreeGameRecord> records) {
+		public async Task SendMessage(NotifyConfig config, List<FreeGameRecord> records) {
 			if (records.Count == 0) {
 				_logger.LogInformation($"{debugSendMessage} : No new notifications !");
 				return;
@@ -37,7 +37,7 @@ namespace SteamDB_FreeGames.Notifier {
 
 			try {
 				var sb = new StringBuilder();
-				string url = new StringBuilder().AppendFormat(barkUrlFormat, address, token).ToString();
+				string url = new StringBuilder().AppendFormat(barkUrlFormat, config.BarkAddress, config.BarkToken).ToString();
 				var webGet = new HtmlWeb();
 
 				foreach (var record in records) {

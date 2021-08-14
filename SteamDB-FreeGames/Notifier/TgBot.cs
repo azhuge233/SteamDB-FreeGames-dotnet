@@ -6,9 +6,10 @@ using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using Microsoft.Extensions.Logging;
 using SteamDB_FreeGames.Models;
+using SteamDB_FreeGames.Notifier;
 
 namespace SteamDB_FreeGames {
-	public class TgBot: IDisposable {
+	public class TgBot: INotifiable {
 		private readonly ILogger<TgBot> _logger;
 
 		#region debug strings
@@ -19,30 +20,30 @@ namespace SteamDB_FreeGames {
 			_logger = logger;
 		}
 
-		public async Task SendMessage(string token, string chatID, List<FreeGameRecord> records, bool htmlMode = false) {
+		public async Task SendMessage(NotifyConfig config, List<FreeGameRecord> records) {
 			if (records.Count == 0) {
 				_logger.LogInformation($"{debugSendMessage} : No new notifications !");
 				return;
 			}
 
 			var sb = new StringBuilder();
-			var BotClient = new TelegramBotClient(token: token);
+			var BotClient = new TelegramBotClient(token: config.TelegramToken);
 
 			try {
 				foreach (var record in records) {
 					_logger.LogDebug($"{debugSendMessage} : {record.Name}");
 					await BotClient.SendTextMessageAsync(
-						chatId: chatID,
-						text: record.ToTelegramMessage(),
-						parseMode: htmlMode ? ParseMode.Html : ParseMode.Default
+						chatId: config.TelegramChatID,
+						text: record.ToTelegramMessage(), 
+						parseMode: ParseMode.Html
 					);
 					sb.Append(sb.Length == 0 ? record.ID : $",{record.ID}");
 				}
 
 				await BotClient.SendTextMessageAsync(
-						chatId: chatID,
+						chatId: config.TelegramChatID,
 						text: sb.ToString(),
-						parseMode: htmlMode ? ParseMode.Html : ParseMode.Default
+						parseMode: ParseMode.Html
 				);
 
 				_logger.LogDebug($"Done: {debugSendMessage}");
