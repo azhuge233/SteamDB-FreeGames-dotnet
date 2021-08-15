@@ -14,6 +14,7 @@ namespace SteamDB_FreeGames.Modules {
 		#region debug strings
 		private readonly string debugNotify = "Notify";
 		private readonly string debugDisabledFormat = "{0} notify is disabled, skipping";
+		private readonly string debugNoNewNotifications = "No new notifications! Skipping";
 		#endregion
 
 
@@ -22,6 +23,11 @@ namespace SteamDB_FreeGames.Modules {
 		}
 
 		public async Task Notify(NotifyConfig config, List<FreeGameRecord> pushList) {
+			if (pushList.Count == 0) {
+				_logger.LogInformation(debugNoNewNotifications);
+				return;
+			}
+
 			try {
 				_logger.LogDebug(debugNotify);
 

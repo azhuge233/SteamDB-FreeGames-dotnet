@@ -20,11 +20,6 @@ namespace SteamDB_FreeGames.Notifier {
 		}
 
 		public async Task SendMessage(NotifyConfig config, List<FreeGameRecord> records) {
-			if (records.Count == 0) {
-				_logger.LogInformation($"{debugSendMessage} : No new notifications !");
-				return;
-			}
-
 			try {
 				var sb = new StringBuilder();
 				string url = new StringBuilder().AppendFormat(NotifyFormatStrings.barkUrlFormat, config.BarkAddress, config.BarkToken).ToString();
