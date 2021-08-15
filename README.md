@@ -1,6 +1,6 @@
 # SteamDB-FreeGames-dotnet
 
-Fetch free games info from SteamDB, notifies on Telegram, Email and Bark.
+Fetch free games info from SteamDB, send notifications through Telegram, Email and Bark.
 
 Demo Telegram Channel [@azhuge233_FreeGames](https://t.me/azhuge233_FreeGames)
 
