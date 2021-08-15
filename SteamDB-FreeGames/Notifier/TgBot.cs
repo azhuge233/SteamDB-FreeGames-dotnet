@@ -6,9 +6,8 @@ using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using Microsoft.Extensions.Logging;
 using SteamDB_FreeGames.Models;
-using SteamDB_FreeGames.Notifier;
 
-namespace SteamDB_FreeGames {
+namespace SteamDB_FreeGames.Notifier {
 	public class TgBot: INotifiable {
 		private readonly ILogger<TgBot> _logger;
 

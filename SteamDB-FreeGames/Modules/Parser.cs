@@ -5,7 +5,7 @@ using HtmlAgilityPack;
 using Microsoft.Extensions.Logging;
 using SteamDB_FreeGames.Models;
 
-namespace SteamDB_FreeGames {
+namespace SteamDB_FreeGames.Modules {
 	class Parser : IDisposable {
 		#region DI variable
 		private readonly ILogger<Parser> _logger;

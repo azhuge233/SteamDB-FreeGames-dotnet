@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
 using SteamDB_FreeGames.Models;
 
-namespace SteamDB_FreeGames {
+namespace SteamDB_FreeGames.Modules {
 	public class JsonOP: IDisposable {
 		private readonly ILogger<JsonOP> _logger;
 

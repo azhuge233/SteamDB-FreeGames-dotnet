@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using SteamDB_FreeGames.Models;
 
-namespace SteamDB_FreeGames {
+namespace SteamDB_FreeGames.Modules {
 	class ConfigValidator: IDisposable {
 		private readonly ILogger<ConfigValidator> _logger;
 

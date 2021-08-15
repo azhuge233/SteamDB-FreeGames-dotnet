@@ -4,7 +4,7 @@ using HtmlAgilityPack;
 using Microsoft.Playwright;
 using Microsoft.Extensions.Logging;
 
-namespace SteamDB_FreeGames {
+namespace SteamDB_FreeGames.Modules {
 	class Scraper : IDisposable {
 		private readonly ILogger<Scraper> _logger;
 		private readonly string SteamDBUrl = "https://steamdb.info/upcoming/free/";
