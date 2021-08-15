@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Microsoft.Playwright;
 using Microsoft.Extensions.Logging;
+using SteamDB_FreeGames.Models;
 
 namespace SteamDB_FreeGames.Modules {
 	class Scraper : IDisposable {
@@ -35,18 +36,18 @@ namespace SteamDB_FreeGames.Modules {
 			}
 		}
 
-		public async Task<string> GetSteamDBSource(int timeOut = 30000, bool useHeadless = true) {
+		public async Task<string> GetSteamDBSource(Config config) {
 			try {
 				_logger.LogDebug(debugGetSteamDBSource);
 
 				Microsoft.Playwright.Program.Main(new string[] { "install", "webkit" }); // From https://github.com/microsoft/playwright-dotnet/issues/1545#issuecomment-865199736
 				string source;
 				using var playwright = await Playwright.CreateAsync();
-				await using var browser = await playwright.Webkit.LaunchAsync(new() { Headless = useHeadless });
+				await using var browser = await playwright.Webkit.LaunchAsync(new() { Headless = config.EnableHeadless });
 
 				var page = await browser.NewPageAsync();
-				page.SetDefaultTimeout(timeOut);
-				page.SetDefaultNavigationTimeout(timeOut);
+				page.SetDefaultTimeout(config.TimeOutMilliSecond);
+				page.SetDefaultNavigationTimeout(config.TimeOutMilliSecond);
 
 				await page.GotoAsync(SteamDBUrl);
 				await page.WaitForSelectorAsync("div.body-content");

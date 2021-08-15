@@ -1,5 +1,5 @@
 ﻿namespace SteamDB_FreeGames.Models {
-	public class PushMessageFormat {
+	public static class NotifyFormatStrings {
 		public static readonly string telegramPushFormat =
 			"<b>{0}</b>\n\n" +
 			"Sub/App ID: <i>{1}</i>\n" +

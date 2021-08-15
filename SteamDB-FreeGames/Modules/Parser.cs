@@ -19,17 +19,6 @@ namespace SteamDB_FreeGames.Modules {
 		private readonly string infoFoundInPreviousRecords = "{0} is found in previous records, stop adding in push list";
 		#endregion
 
-		#region XPath strings
-		private readonly string XPathRecord = ".//div[@class=\'container\']//table//tr[@class=\'app\']";
-		private readonly string XPathtds = ".//td";
-		#endregion
-
-		#region parser stings
-		private readonly string SteamDBDateFormat = "yyyy-MM-dTHH:mm:ss+00:00";
-		private readonly string keepGameString = "Keep";
-		private readonly string hiddenAttribute = "hidden";
-		#endregion
-
 		public Parser(ILogger<Parser> logger) {
 			_logger = logger;
 		}
@@ -42,23 +31,24 @@ namespace SteamDB_FreeGames.Modules {
 				var htmlDoc = new HtmlDocument();
 				htmlDoc.LoadHtml(source);
 
-				var apps = htmlDoc.DocumentNode.SelectNodes(XPathRecord);
+				var apps = htmlDoc.DocumentNode.SelectNodes(ParseStrings.XPathRecord);
 				
 				foreach (var each in apps) {
 					//skip the hidden trap row
-					if (each.Attributes.Contains(hiddenAttribute)) continue;
+					if (each.Attributes.Contains(ParseStrings.hiddenAttribute)) continue;
 
-					var tds = each.SelectNodes(XPathtds).ToList();
+					var tds = each.SelectNodes(ParseStrings.XPathtds).ToList();
 
 					var newFreeGame = new FreeGameRecord {
 						//start gather free game basic info
 						//SubID change to ID, SteamDB does not always provide game's SubID, somtimes AppID
-						ID = tds[1].SelectSingleNode(".//a[@href]").Attributes["href"].Value.Trim('/'),
+						ID = tds[1].SelectSingleNode(".//a[@href]").Attributes["href"]?.Value.Trim('/'),
 						Name = tds[1].SelectSingleNode(".//b").InnerText,
-						FreeType = tds[3].InnerHtml.ToString() == "Weekend" ? "Weekend" : "Keep",
+						FreeType = tds[3].InnerHtml == "Weekend" ? "Weekend" : "Keep",
 						Url = tds[0].SelectSingleNode(".//a[@href]").Attributes["href"].Value.Split('?')[0],
-						StartTime = tds[4].Attributes["data-time"] == null ? DateTime.Now : DateTime.ParseExact(tds[4].Attributes["data-time"].Value.ToString(), SteamDBDateFormat, System.Globalization.CultureInfo.InvariantCulture).AddHours(8), // in case of blank start/end time
-						EndTime = tds[5].Attributes["data-time"] == null ? DateTime.Now : DateTime.ParseExact(tds[5].Attributes["data-time"].Value.ToString(), SteamDBDateFormat, System.Globalization.CultureInfo.InvariantCulture).AddHours(8)
+						// in case of blank start/end time
+						StartTime = tds[4].Attributes["data-time"] == null ? null : DateTime.ParseExact(tds[4].Attributes["data-time"].Value, ParseStrings.SteamDBDateFormat, System.Globalization.CultureInfo.InvariantCulture).AddHours(8), 
+						EndTime = tds[5].Attributes["data-time"] == null ? null : DateTime.ParseExact(tds[5].Attributes["data-time"].Value, ParseStrings.SteamDBDateFormat, System.Globalization.CultureInfo.InvariantCulture).AddHours(8)
 					};
 
 					_logger.LogInformation(infoGameFound, newFreeGame.Name, newFreeGame.FreeType);
@@ -67,8 +57,8 @@ namespace SteamDB_FreeGames.Modules {
 					parseResult.Records.Add(newFreeGame);
 
 					// the game is not in the previous record
-					if (records.Count == 0 || !records.Exists(record => record.Name == newFreeGame.Name && record.ID == newFreeGame.ID && record.FreeType == newFreeGame.FreeType )) {
-						if (newFreeGame.FreeType == keepGameString) {
+					if (records.Count == 0 || !records.Exists(record => record.Name == newFreeGame.Name && record.ID == newFreeGame.ID && record.FreeType == newFreeGame.FreeType && record.StartTime == newFreeGame.StartTime && record.EndTime == newFreeGame.EndTime )) {
+						if (newFreeGame.FreeType == ParseStrings.keepGameString) {
 							parseResult.PushListKeepOnly.Add(newFreeGame);
 							_logger.LogInformation(infoAddToPushListKeepOnly, newFreeGame.Name);
 						}

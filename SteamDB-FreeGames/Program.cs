@@ -21,8 +21,8 @@ namespace SteamDB_FreeGames {
                     servicesProvider.GetRequiredService<ConfigValidator>().CheckValid(config);
 
                     // Get page source
-                    var source = await servicesProvider.GetRequiredService<Scraper>().GetSteamDBSource(config.TimeOutMilliSecond, config.EnableHeadless);
-                    //var source = System.IO.File.ReadAllText("test.html");
+                    //var source = await servicesProvider.GetRequiredService<Scraper>().GetSteamDBSource(config);
+                    var source = System.IO.File.ReadAllText("test.html");
 
                     // Parse page source
                     var parseResult = servicesProvider.GetRequiredService<Parser>().HtmlParse(source, jsonOp.LoadData());

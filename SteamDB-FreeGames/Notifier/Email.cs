@@ -32,12 +32,12 @@ namespace SteamDB_FreeGames.Notifier {
 				var sb = new StringBuilder();
 				var sbSubID = new StringBuilder();
 
-				message.Subject = sb.AppendFormat(PushMessageFormat.emailTitleFormat, pushList.Count).ToString();
+				message.Subject = sb.AppendFormat(NotifyFormatStrings.emailTitleFormat, pushList.Count).ToString();
 				sb.Clear();
 
 				pushList.ForEach(record => {
 					sbSubID.Append(sbSubID.Length == 0 ? record.ID : $",{record.ID}");
-					sb.AppendFormat(PushMessageFormat.emailBodyFormat, record.ToEmailMessage());
+					sb.AppendFormat(NotifyFormatStrings.emailBodyFormat, record.ToEmailMessage());
 				});
 
 				message.Body = new TextPart("html") {

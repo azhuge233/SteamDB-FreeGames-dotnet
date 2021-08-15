@@ -27,7 +27,7 @@ namespace SteamDB_FreeGames.Notifier {
 
 			try {
 				var sb = new StringBuilder();
-				string url = new StringBuilder().AppendFormat(PushMessageFormat.barkUrlFormat, config.BarkAddress, config.BarkToken).ToString();
+				string url = new StringBuilder().AppendFormat(NotifyFormatStrings.barkUrlFormat, config.BarkAddress, config.BarkToken).ToString();
 				var webGet = new HtmlWeb();
 
 				foreach (var record in records) {
@@ -36,9 +36,9 @@ namespace SteamDB_FreeGames.Notifier {
 					await webGet.LoadFromWebAsync(
 						new StringBuilder()
 							.Append(url)
-							.Append(PushMessageFormat.barkUrlTitle)
+							.Append(NotifyFormatStrings.barkUrlTitle)
 							.Append(HttpUtility.UrlEncode(record.ToBarkMessage()))
-							.Append(new StringBuilder().AppendFormat(PushMessageFormat.barkUrlArgs, record.ID))
+							.Append(new StringBuilder().AppendFormat(NotifyFormatStrings.barkUrlArgs, record.ID))
 							.ToString()
 					);
 				}
@@ -46,9 +46,9 @@ namespace SteamDB_FreeGames.Notifier {
 				await webGet.LoadFromWebAsync(
 						new StringBuilder()
 							.Append(url)
-							.Append(PushMessageFormat.barkUrlTitle)
+							.Append(NotifyFormatStrings.barkUrlTitle)
 							.Append(HttpUtility.UrlEncode(sb.ToString()))
-							.Append(new StringBuilder().AppendFormat(PushMessageFormat.barkUrlArgs, sb.ToString()))
+							.Append(new StringBuilder().AppendFormat(NotifyFormatStrings.barkUrlArgs, sb.ToString()))
 							.ToString()
 					);
 
