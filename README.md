@@ -22,8 +22,8 @@ Fill your Telegram Bot token and chat ID in config.json
 
 ```json
 {
-	"TOKEN": "xxxxxx:xxxxxx",
-	"CHAT_ID": "xxxxxxxx",
+	"TelegramToken": "xxxxxx:xxxxxx",
+	"TelegramChatID": "xxxxxxxx",
 }
 ```
 
