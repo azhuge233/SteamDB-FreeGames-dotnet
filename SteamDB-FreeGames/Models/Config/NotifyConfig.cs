@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SteamDB_FreeGames.Models {
+﻿namespace SteamDB_FreeGames.Models {
 	public class NotifyConfig {
 		public bool EnableTelegram { get; set; }
 		public bool EnableBark { get; set; }
@@ -22,5 +16,10 @@ namespace SteamDB_FreeGames.Models {
 		public string ToEmailAddress { get; set; }
 		public string AuthAccount { get; set; }
 		public string AuthPassword { get; set; }
+
+		public bool EnableQQ { get; set; }
+		public string QQAddress { get; set; }
+		public string QQPort { get; set; }
+		public string ToQQID { get; set; }
 	}
 }

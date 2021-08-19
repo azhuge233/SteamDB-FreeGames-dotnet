@@ -21,6 +21,7 @@ namespace SteamDB_FreeGames.Modules {
                .AddTransient<Barker>()
                .AddTransient<TgBot>()
                .AddTransient<Email>()
+               .AddTransient<QQPusher>()
                .AddLogging(loggingBuilder => {
                    // configure Logging with NLog
                    loggingBuilder.ClearProviders();
@@ -35,6 +36,7 @@ namespace SteamDB_FreeGames.Modules {
                .AddTransient<TgBot>()
                .AddTransient<Barker>()
                .AddTransient<Email>()
+               .AddTransient<QQPusher>()
                .AddLogging(loggingBuilder => {
                    // configure Logging with NLog
                    loggingBuilder.ClearProviders();

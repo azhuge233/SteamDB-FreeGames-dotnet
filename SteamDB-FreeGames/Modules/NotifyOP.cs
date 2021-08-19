@@ -13,6 +13,7 @@ namespace SteamDB_FreeGames.Modules {
 
 		#region debug strings
 		private readonly string debugNotify = "Notify";
+		private readonly string debugEnabledFormat = "Sending notifications to {0}";
 		private readonly string debugDisabledFormat = "{0} notify is disabled, skipping";
 		private readonly string debugNoNewNotifications = "No new notifications! Skipping";
 		#endregion
@@ -32,19 +33,28 @@ namespace SteamDB_FreeGames.Modules {
 				_logger.LogDebug(debugNotify);
 
 				// Telegram notifications
-				if (config.EnableTelegram)
+				if (config.EnableTelegram) {
+					_logger.LogInformation(debugEnabledFormat, "Telegram");
 					await services.GetRequiredService<TgBot>().SendMessage(config, pushList);
-				else _logger.LogInformation(debugDisabledFormat, "Telegram");
+				} else _logger.LogInformation(debugDisabledFormat, "Telegram");
 
 				// Bark notifications
-				if (config.EnableBark)
+				if (config.EnableBark) {
+					_logger.LogInformation(debugEnabledFormat, "Bark");
 					await services.GetRequiredService<Barker>().SendMessage(config, pushList);
-				else _logger.LogInformation(debugDisabledFormat, "Bark");
+				} else _logger.LogInformation(debugDisabledFormat, "Bark");
+
+				//QQ notifications
+				if (config.EnableQQ) {
+					_logger.LogInformation(debugEnabledFormat, "QQ");
+					await services.GetRequiredService<QQPusher>().SendMessage(config, pushList);
+				} else _logger.LogInformation(debugDisabledFormat, "QQ");
 
 				//Email notifications
-				if (config.EnableEmail)
+				if (config.EnableEmail) {
+					_logger.LogInformation(debugEnabledFormat, "Email");
 					await services.GetRequiredService<Email>().SendMessage(config, pushList);
-				else _logger.LogInformation(debugDisabledFormat, "Email");
+				} else _logger.LogInformation(debugDisabledFormat, "Email");
 
 				_logger.LogDebug($"Done: {debugNotify}");
 			} catch (Exception) {

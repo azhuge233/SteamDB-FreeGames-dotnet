@@ -19,11 +19,15 @@ namespace SteamDB_FreeGames.Models {
 		}
 
 		public string ToBarkMessage() {
-			return new StringBuilder().AppendFormat(NotifyFormatStrings.barkPushFormat, Name, ID, FreeType, Url, StartTime.ToString(), EndTime.ToString(), ID).ToString();
+			return new StringBuilder().AppendFormat(NotifyFormatStrings.barkPushFormat, Name, ID, FreeType, Url, StartTime.ToString(), EndTime.ToString()).ToString();
 		}
 
 		public string ToEmailMessage() {
 			return new StringBuilder().AppendFormat(NotifyFormatStrings.emailPushHtmlFormat, Name, ID, FreeType, Url, Name, StartTime.ToString(), EndTime.ToString()).ToString();
+		}
+
+		public string ToQQMessage() {
+			return new StringBuilder().AppendFormat(NotifyFormatStrings.qqPushFormat, Name, ID, FreeType, Url, StartTime.ToString(), EndTime.ToString()).ToString();
 		}
 	}
 }

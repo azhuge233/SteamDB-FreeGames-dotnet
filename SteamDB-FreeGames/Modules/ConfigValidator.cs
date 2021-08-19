@@ -20,32 +20,42 @@ namespace SteamDB_FreeGames.Modules {
 
 				//Telegram
 				if (config.EnableTelegram) {
-					if (config.TelegramToken == string.Empty)
+					if (string.IsNullOrEmpty(config.TelegramToken))
 						throw new Exception(message: "No Telegram Token provided!");
-					if (config.TelegramChatID == string.Empty)
+					if (string.IsNullOrEmpty(config.TelegramChatID))
 						throw new Exception(message: "No Telegram ChatID provided!");
 				}
 
 				//Bark
 				if (config.EnableBark) {
-					if (config.BarkAddress == string.Empty)
+					if (string.IsNullOrEmpty(config.BarkAddress))
 						throw new Exception(message: "No Bark Address provided!");
-					if (config.BarkToken == string.Empty)
+					if (string.IsNullOrEmpty(config.BarkToken))
 						throw new Exception(message: "No Bark Token provided!");
 				}
 
 				//Email
 				if (config.EnableEmail) {
-					if (config.FromEmailAddress == string.Empty)
+					if (string.IsNullOrEmpty(config.FromEmailAddress))
 						throw new Exception(message: "No from email address provided!");
-					if (config.ToEmailAddress == string.Empty)
+					if (string.IsNullOrEmpty(config.ToEmailAddress))
 						throw new Exception(message: "No to email address provided!");
-					if (config.SMTPServer == string.Empty)
+					if (string.IsNullOrEmpty(config.SMTPServer))
 						throw new Exception(message: "No SMTP server provided!");
-					if (config.AuthAccount == string.Empty)
+					if (string.IsNullOrEmpty(config.AuthAccount))
 						throw new Exception(message: "No email auth account provided!");
-					if (config.AuthPassword == string.Empty)
+					if (string.IsNullOrEmpty(config.AuthPassword))
 						throw new Exception(message: "No email auth password provided!");
+				}
+
+				//QQ
+				if (config.EnableQQ) {
+					if (string.IsNullOrEmpty(config.QQAddress))
+						throw new Exception(message: "No QQ address provided!");
+					if (string.IsNullOrEmpty(config.QQPort))
+						throw new Exception(message: "No QQ port provided!");
+					if (string.IsNullOrEmpty(config.ToQQID))
+						throw new Exception(message: "No QQ ID provided!");
 				}
 
 				_logger.LogDebug($"Done: {debugCheckValid}");

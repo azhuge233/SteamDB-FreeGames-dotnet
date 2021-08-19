@@ -9,8 +9,12 @@
 			"结束时间: {6}\n";
 
 		public static readonly string barkPushFormat =
-			"{0}\nSub/App ID: {1}\n免费类型: {2}\n" +
-			"链接: {3}\n开始时间: {4}\n结束时间: {5}";
+			"{0}\n" +
+			"Sub/App ID: {1}\n" +
+			"免费类型: {2}\n" +
+			"链接: {3}\n" +
+			"开始时间: {4}\n" +
+			"结束时间: {5}";
 
 		public static readonly string emailPushHtmlFormat =
 			"<p><b>{0}</b><br>" +
@@ -19,6 +23,14 @@
 			"链接: <a href=\"{3}\" > {4}</a><br>" +
 			"开始时间: {5}<br>" +
 			"结束时间: {6}</p>";
+
+		public static readonly string qqPushFormat =
+			"{0}\n" +
+			"Sub/App ID: {1}\n" +
+			"免费类型: {2}\n" +
+			"链接: {3}\n" +
+			"开始时间: {4}\n" +
+			"结束时间: {5}";
 
 		public static readonly string barkUrlFormat = "{0}/{1}/";
 		public static readonly string barkUrlTitle = "SteamDB-FreeGames/";
@@ -30,5 +42,7 @@
 
 		public static readonly string emailTitleFormat = "{0} new free game(s) - SteamDB-FreeGames";
 		public static readonly string emailBodyFormat = "<br>{0}";
+
+		public static readonly string qqUrlFormat = "http://{0}:{1}/send_private_msg?user_id={2}&message=";
 	}
 }

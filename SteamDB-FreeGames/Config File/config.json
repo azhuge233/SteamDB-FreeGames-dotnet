@@ -2,9 +2,11 @@
   "EnableTelegram": true,
   "TelegramToken": "",
   "TelegramChatID": "",
+
   "EnableBark": false,
   "BarkAddress": "https://api.day.app",
   "BarkToken": "",
+
   "EnableEmail": false,
   "SMTPServer": "",
   "SMTPPort": 465,
@@ -12,6 +14,12 @@
   "ToEmailAddress": "",
   "AuthAccount": "",
   "AuthPassword": "",
+
+  "EnableQQ": false,
+  "QQAddress": "127.0.0.1",
+  "QQPort": 5700,
+  "ToQQID": "",
+
   "EnableHeadless": true,
   "NotifyKeepGamesOnly": true,
   "TimeOutMilliSecond": 30000
