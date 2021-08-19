@@ -31,9 +31,6 @@ Check [wiki](https://github.com/azhuge233/SteamDB-FreeGames-dotnet/wiki/Config-D
 
 Tested on Windows Server 2019, macOS Catalina 10.15.6.
 
-## To-do
-...
-
 ## My Free Games Collection
 
 - SteamDB
