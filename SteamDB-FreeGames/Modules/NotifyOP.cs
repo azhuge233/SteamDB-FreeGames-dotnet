@@ -56,10 +56,11 @@ namespace SteamDB_FreeGames.Modules {
 					await services.GetRequiredService<PushPlus>().SendMessage(config, pushList);
 				} else _logger.LogInformation(debugDisabledFormat, "PushPlus");
 
+				// DingTalk notifications
 				if (config.EnableDingTalk) {
 					_logger.LogInformation(debugEnabledFormat, "DingTalk");
 					await services.GetRequiredService<DingTalk>().SendMessage(config, pushList);
-				} else _logger.LogInformation(debugDisabledFormat, "PushPlus");
+				} else _logger.LogInformation(debugDisabledFormat, "DingTalk");
 
 				// Email notifications
 				if (config.EnableEmail) {
