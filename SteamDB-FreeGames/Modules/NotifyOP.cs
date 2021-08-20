@@ -44,13 +44,19 @@ namespace SteamDB_FreeGames.Modules {
 					await services.GetRequiredService<Barker>().SendMessage(config, pushList);
 				} else _logger.LogInformation(debugDisabledFormat, "Bark");
 
-				//QQ notifications
+				// QQ notifications
 				if (config.EnableQQ) {
 					_logger.LogInformation(debugEnabledFormat, "QQ");
 					await services.GetRequiredService<QQPusher>().SendMessage(config, pushList);
 				} else _logger.LogInformation(debugDisabledFormat, "QQ");
 
-				//Email notifications
+				// PushPlus notifications
+				if (config.EnablePushPlus) {
+					_logger.LogInformation(debugEnabledFormat, "PushPlus");
+					await services.GetRequiredService<PushPlus>().SendMessage(config, pushList);
+				} else _logger.LogInformation(debugDisabledFormat, "PushPlus");
+
+				// Email notifications
 				if (config.EnableEmail) {
 					_logger.LogInformation(debugEnabledFormat, "Email");
 					await services.GetRequiredService<Email>().SendMessage(config, pushList);

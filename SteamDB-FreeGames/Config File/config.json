@@ -20,6 +20,9 @@
   "QQPort": 5700,
   "ToQQID": "",
 
+  "EnablePushPlus": false,
+  "PushPlusToken": "",
+
   "EnableHeadless": true,
   "NotifyKeepGamesOnly": true,
   "TimeOutMilliSecond": 30000

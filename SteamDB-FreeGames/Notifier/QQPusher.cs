@@ -26,24 +26,27 @@ namespace SteamDB_FreeGames.Notifier {
 				string url = new StringBuilder().AppendFormat(NotifyFormatStrings.qqUrlFormat, config.QQAddress, config.QQPort, config.ToQQID).ToString();
 				var sb = new StringBuilder();
 				var webGet = new HtmlWeb();
+				var resp = new HtmlDocument();
 
 				foreach (var record in records) {
 					_logger.LogDebug($"{debugSendMessage} : {record.Name}");
 					sb.Append(sb.Length == 0 ? record.ID : $",{record.ID}");
-					var res = await webGet.LoadFromWebAsync(
+					resp = await webGet.LoadFromWebAsync(
 						new StringBuilder()
 							.Append(url)
 							.Append(HttpUtility.UrlEncode(record.ToQQMessage()))
 							.ToString()
 					);
+					_logger.LogDebug(resp.Text);
 				}
 
-				await webGet.LoadFromWebAsync(
+				resp = await webGet.LoadFromWebAsync(
 						new StringBuilder()
 							.Append(url)
 							.Append(HttpUtility.UrlEncode(sb.ToString()))
 							.ToString()
 				);
+				_logger.LogDebug(resp.Text);
 
 				_logger.LogDebug($"Done: {debugSendMessage}");
 			} catch (Exception) {

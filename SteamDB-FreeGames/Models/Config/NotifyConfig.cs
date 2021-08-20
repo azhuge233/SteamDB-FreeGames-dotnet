@@ -21,5 +21,8 @@
 		public string QQAddress { get; set; }
 		public string QQPort { get; set; }
 		public string ToQQID { get; set; }
+
+		public bool EnablePushPlus { get; set; }
+		public string PushPlusToken { get; set; }
 	}
 }

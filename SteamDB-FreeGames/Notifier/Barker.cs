@@ -24,11 +24,12 @@ namespace SteamDB_FreeGames.Notifier {
 				var sb = new StringBuilder();
 				string url = new StringBuilder().AppendFormat(NotifyFormatStrings.barkUrlFormat, config.BarkAddress, config.BarkToken).ToString();
 				var webGet = new HtmlWeb();
+				var resp = new HtmlDocument();
 
 				foreach (var record in records) {
 					_logger.LogDebug($"{debugSendMessage} : {record.Name}");
 					sb.Append(sb.Length == 0 ? record.ID : $",{record.ID}");
-					await webGet.LoadFromWebAsync(
+					resp = await webGet.LoadFromWebAsync(
 						new StringBuilder()
 							.Append(url)
 							.Append(NotifyFormatStrings.barkUrlTitle)
@@ -36,9 +37,10 @@ namespace SteamDB_FreeGames.Notifier {
 							.Append(new StringBuilder().AppendFormat(NotifyFormatStrings.barkUrlArgs, record.ID))
 							.ToString()
 					);
+					_logger.LogDebug(resp.Text);
 				}
 
-				await webGet.LoadFromWebAsync(
+				resp = await webGet.LoadFromWebAsync(
 						new StringBuilder()
 							.Append(url)
 							.Append(NotifyFormatStrings.barkUrlTitle)
@@ -46,6 +48,7 @@ namespace SteamDB_FreeGames.Notifier {
 							.Append(new StringBuilder().AppendFormat(NotifyFormatStrings.barkUrlArgs, sb.ToString()))
 							.ToString()
 					);
+				_logger.LogDebug(resp.Text);
 
 				_logger.LogDebug($"Done: {debugSendMessage}");
 			} catch (Exception) {

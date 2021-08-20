@@ -27,7 +27,7 @@ namespace SteamDB_FreeGames {
                     // Parse page source
                     var parseResult = servicesProvider.GetRequiredService<Parser>().HtmlParse(source, jsonOp.LoadData());
 
-                    //Notify first, then write records
+                    // Notify first, then write records
                     await servicesProvider.GetRequiredService<NotifyOP>().Notify(config, config.NotifyKeepGamesOnly ? parseResult.PushListKeepOnly : parseResult.PushListAll);
 
                     // Write new records

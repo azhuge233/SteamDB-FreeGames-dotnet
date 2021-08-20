@@ -58,6 +58,12 @@ namespace SteamDB_FreeGames.Modules {
 						throw new Exception(message: "No QQ ID provided!");
 				}
 
+				//PushPlus
+				if (config.EnablePushPlus) {
+					if (string.IsNullOrEmpty(config.PushPlusToken))
+						throw new Exception(message: "No PushPlus token provided!");
+				}
+
 				_logger.LogDebug($"Done: {debugCheckValid}");
 			} catch (Exception) {
 				_logger.LogError($"Error: {debugCheckValid}");

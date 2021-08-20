@@ -29,5 +29,9 @@ namespace SteamDB_FreeGames.Models {
 		public string ToQQMessage() {
 			return new StringBuilder().AppendFormat(NotifyFormatStrings.qqPushFormat, Name, ID, FreeType, Url, StartTime.ToString(), EndTime.ToString()).ToString();
 		}
+
+		public string ToPushPlusMessage() {
+			return new StringBuilder().AppendFormat(NotifyFormatStrings.pushPlusPushHtmlFormat, Name, ID, FreeType, Url, Name, StartTime.ToString(), EndTime.ToString()).ToString();
+		}
 	}
 }
