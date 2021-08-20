@@ -15,7 +15,7 @@ namespace SteamDB_FreeGames.Models {
 		public DateTime? EndTime { get; set; }
 
 		public string ToTelegramMessage() {
-			return new StringBuilder().AppendFormat(NotifyFormatStrings.telegramPushFormat, Name, ID, FreeType, Url, Name, StartTime.ToString(), EndTime.ToString()).ToString();
+			return new StringBuilder().AppendFormat(NotifyFormatStrings.telegramPushFormat, Name, ID, FreeType, Url, StartTime.ToString(), EndTime.ToString()).ToString();
 		}
 
 		public string ToBarkMessage() {
@@ -32,6 +32,10 @@ namespace SteamDB_FreeGames.Models {
 
 		public string ToPushPlusMessage() {
 			return new StringBuilder().AppendFormat(NotifyFormatStrings.pushPlusPushHtmlFormat, Name, ID, FreeType, Url, Name, StartTime.ToString(), EndTime.ToString()).ToString();
+		}
+
+		public string ToDingTalkMessage() {
+			return new StringBuilder().AppendFormat(NotifyFormatStrings.dingTalkPushFormat, Name, ID, FreeType, Url, StartTime.ToString(), EndTime.ToString()).ToString();
 		}
 	}
 }

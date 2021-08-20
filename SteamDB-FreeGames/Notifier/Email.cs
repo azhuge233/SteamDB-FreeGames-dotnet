@@ -41,7 +41,10 @@ namespace SteamDB_FreeGames.Notifier {
 				});
 
 				message.Body = new TextPart("html") {
-					Text = sbSubID.Append("<br>").Append(sb).ToString()
+					Text = sbSubID.Append("<br>")
+						.Append(sb)
+						.Append(NotifyFormatStrings.projectLinkHTML)
+						.ToString()
 				};
 		
 				_logger.LogDebug($"Done: {debugCreateMessage}");

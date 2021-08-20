@@ -64,6 +64,12 @@ namespace SteamDB_FreeGames.Modules {
 						throw new Exception(message: "No PushPlus token provided!");
 				}
 
+				//DingTalk
+				if (config.EnableDingTalk) {
+					if (string.IsNullOrEmpty(config.DingTalkBotToken))
+						throw new Exception(message: "No DingTalk token provided!");
+				}
+
 				_logger.LogDebug($"Done: {debugCheckValid}");
 			} catch (Exception) {
 				_logger.LogError($"Error: {debugCheckValid}");

@@ -35,6 +35,7 @@ namespace SteamDB_FreeGames.Notifier {
 						new StringBuilder()
 							.Append(url)
 							.Append(HttpUtility.UrlEncode(record.ToQQMessage()))
+							.Append(HttpUtility.UrlEncode(NotifyFormatStrings.projectLink))
 							.ToString()
 					);
 					_logger.LogDebug(resp.Text);

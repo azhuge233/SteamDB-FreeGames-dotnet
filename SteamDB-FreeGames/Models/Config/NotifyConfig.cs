@@ -24,5 +24,8 @@
 
 		public bool EnablePushPlus { get; set; }
 		public string PushPlusToken { get; set; }
+
+		public bool EnableDingTalk { get; set; }
+		public string DingTalkBotToken { get; set; }
 	}
 }

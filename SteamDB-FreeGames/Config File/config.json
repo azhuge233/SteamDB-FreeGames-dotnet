@@ -23,6 +23,9 @@
   "EnablePushPlus": false,
   "PushPlusToken": "",
 
+  "EnableDingTalk": false,
+  "DingTalkBotToken": "",
+
   "EnableHeadless": true,
   "NotifyKeepGamesOnly": true,
   "TimeOutMilliSecond": 30000

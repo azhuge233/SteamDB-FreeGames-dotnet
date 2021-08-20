@@ -32,7 +32,7 @@ namespace SteamDB_FreeGames.Notifier {
 					sb.AppendFormat(NotifyFormatStrings.pushPlusBodyFormat, record.ToPushPlusMessage());
 				});
 
-				sbSubID.Append(sb);
+				sbSubID.Append(sb).Append(NotifyFormatStrings.projectLinkHTML);
 
 				_logger.LogDebug($"Done: {debugCreateMessage}");
 				return HttpUtility.UrlEncode(sbSubID.ToString());

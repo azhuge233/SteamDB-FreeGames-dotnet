@@ -28,7 +28,7 @@ namespace SteamDB_FreeGames.Notifier {
 					_logger.LogDebug($"{debugSendMessage} : {record.Name}");
 					await BotClient.SendTextMessageAsync(
 						chatId: config.TelegramChatID,
-						text: record.ToTelegramMessage(), 
+						text: $"{record.ToTelegramMessage()}{NotifyFormatStrings.projectLink}", 
 						parseMode: ParseMode.Html
 					);
 					sb.Append(sb.Length == 0 ? record.ID : $",{record.ID}");
