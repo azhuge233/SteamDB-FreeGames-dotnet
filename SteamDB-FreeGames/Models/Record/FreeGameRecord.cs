@@ -23,7 +23,7 @@ namespace SteamDB_FreeGames.Models {
 		}
 
 		public string ToEmailMessage() {
-			return new StringBuilder().AppendFormat(NotifyFormatStrings.emailPushHtmlFormat, Name, ID, FreeType, Url, Name, StartTime.ToString(), EndTime.ToString()).ToString();
+			return new StringBuilder().AppendFormat(NotifyFormatStrings.emailPushHtmlFormat, Name, ID, FreeType, Url, StartTime.ToString(), EndTime.ToString()).ToString();
 		}
 
 		public string ToQQMessage() {
@@ -31,7 +31,7 @@ namespace SteamDB_FreeGames.Models {
 		}
 
 		public string ToPushPlusMessage() {
-			return new StringBuilder().AppendFormat(NotifyFormatStrings.pushPlusPushHtmlFormat, Name, ID, FreeType, Url, Name, StartTime.ToString(), EndTime.ToString()).ToString();
+			return new StringBuilder().AppendFormat(NotifyFormatStrings.pushPlusPushHtmlFormat, Name, ID, FreeType, Url, StartTime.ToString(), EndTime.ToString()).ToString();
 		}
 
 		public string ToDingTalkMessage() {
