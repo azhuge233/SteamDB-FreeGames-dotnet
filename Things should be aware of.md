@@ -12,6 +12,8 @@
       
       ![](https://user-images.githubusercontent.com/17763056/128747169-6f0314f5-e1f2-4f76-9463-fec9e7c6118e.png)
       
+    - SteamDB's founder states that SteamDB will activate a new anti-scraping function specifically to China users.
+      
     - Just be nice :).
 
 
