@@ -1,6 +1,6 @@
 ### Few things you should be aware of.
 
-1. About scraping frequency
+1. Scraping frequency
 
     - SteamDB has been trying things to protect their site from scraping, include adding fake record and hCaptcha, which is disgusting, this action has also affected non-scraping people's experience, you can search for complaints at [keylol.com](https://keylol.com) (or some other steam community sites).
 
@@ -12,10 +12,12 @@
       
       ![](https://user-images.githubusercontent.com/17763056/128747169-6f0314f5-e1f2-4f76-9463-fec9e7c6118e.png)
       
+    - SteamDB's founder states that SteamDB will activate a new anti-scraping function specifically to China users.
+      
     - Just be nice :).
 
 
-2. About SteamDB free games page
+2. SteamDB
 
     - Free games' start time that SteamDB provides is not precise, when the script gets a new game then send it to Telegram, the free time probably isn't started, it's normal to be failed when you instantly add free games to your account.
     - SteamDB does not always has the first-hand information, some other source should be added if you really want to get all the free games.
