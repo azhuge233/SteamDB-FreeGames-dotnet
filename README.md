@@ -27,7 +27,9 @@ Fill your Telegram Bot token and chat ID in config.json
 }
 ```
 
-Check [wiki](https://github.com/azhuge233/SteamDB-FreeGames-dotnet/wiki/Config-Description) for config variable descriptions.
+Check [wiki](https://github.com/azhuge233/SteamDB-FreeGames-dotnet/wiki/Config-Description) for more config variable descriptions.
+
+To schedule the program, use cron.d in Linux(macOS) or Task Scheduler in Windows.
 
 Tested on Windows Server 2019, macOS Catalina 10.15.6.
 
