@@ -44,7 +44,7 @@ namespace SteamDB_FreeGames.Modules {
 						//SubID change to ID, SteamDB does not always provide game's SubID, somtimes AppID
 						ID = tds[1].SelectSingleNode(".//a[@href]").Attributes["href"]?.Value.Trim('/'),
 						Name = tds[1].SelectSingleNode(".//b").InnerText,
-						FreeType = tds[3].InnerHtml == "Weekend" ? "Weekend" : "Keep",
+						FreeType = tds[3].InnerHtml.Contains(ParseStrings.keepGameString) ? ParseStrings.keepGameString : tds[3].InnerHtml,
 						Url = tds[0].SelectSingleNode(".//a[@href]").Attributes["href"].Value.Split('?')[0],
 						// in case of blank start/end time
 						StartTime = tds[4].Attributes["data-time"] == null ? null : DateTime.ParseExact(tds[4].Attributes["data-time"].Value, ParseStrings.SteamDBDateFormat, System.Globalization.CultureInfo.InvariantCulture).AddHours(8), 
