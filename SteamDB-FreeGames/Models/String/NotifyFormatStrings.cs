@@ -7,7 +7,8 @@
 			"免费类型: {2}\n" +
 			"链接: <a href=\"{3}\" > {0}</a>\n" +
 			"开始时间: {4}\n" +
-			"结束时间: {5}\n";
+			"结束时间: {5}\n\n" + 
+			"#Steam #{2}";
 		public static readonly string barkPushFormat =
 			"{0}\n" +
 			"Sub/App ID: {1}\n" +
