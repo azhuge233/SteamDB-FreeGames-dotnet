@@ -41,8 +41,7 @@ namespace SteamDB_FreeGames.Modules {
 				_logger.LogDebug(debugGetSteamDBSource);
 
 				// From https://github.com/microsoft/playwright-dotnet/issues/1545#issuecomment-865199736
-				// Stop using until being fixed, see: https://github.com/microsoft/playwright-dotnet/issues/1765
-				// Microsoft.Playwright.Program.Main(new string[] { "install", "webkit" }); 
+				Microsoft.Playwright.Program.Main(new string[] { "install", "webkit" }); 
 				string source;
 				using var playwright = await Playwright.CreateAsync();
 				await using var browser = await playwright.Webkit.LaunchAsync(new() { Headless = config.EnableHeadless });
