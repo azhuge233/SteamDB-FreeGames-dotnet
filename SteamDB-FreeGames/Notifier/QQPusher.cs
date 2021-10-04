@@ -19,7 +19,7 @@ namespace SteamDB_FreeGames.Notifier {
 			_logger = logger;
 		}
 
-		public async Task SendMessage(NotifyConfig config, List<FreeGameRecord> records) {
+		public async Task SendMessage(NotifyConfig config, List<NotifyRecord> records) {
 			try {
 				_logger.LogDebug(debugSendMessage);
 
@@ -34,7 +34,7 @@ namespace SteamDB_FreeGames.Notifier {
 					resp = await webGet.LoadFromWebAsync(
 						new StringBuilder()
 							.Append(url)
-							.Append(HttpUtility.UrlEncode(record.ToQQMessage()))
+							.Append(HttpUtility.UrlEncode(record.ToQQMessage(update: record.IsUpdate)))
 							.Append(HttpUtility.UrlEncode(NotifyFormatStrings.projectLink))
 							.ToString()
 					);

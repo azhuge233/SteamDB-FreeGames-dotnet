@@ -19,7 +19,7 @@ namespace SteamDB_FreeGames.Notifier {
 			_logger = logger;
 		}
 
-		public async Task SendMessage(NotifyConfig config, List<FreeGameRecord> records) {
+		public async Task SendMessage(NotifyConfig config, List<NotifyRecord> records) {
 			try {
 				var sb = new StringBuilder();
 				string url = new StringBuilder().AppendFormat(NotifyFormatStrings.barkUrlFormat, config.BarkAddress, config.BarkToken).ToString();
@@ -33,7 +33,7 @@ namespace SteamDB_FreeGames.Notifier {
 						new StringBuilder()
 							.Append(url)
 							.Append(NotifyFormatStrings.barkUrlTitle)
-							.Append(HttpUtility.UrlEncode(record.ToBarkMessage()))
+							.Append(HttpUtility.UrlEncode(record.ToBarkMessage(update: record.IsUpdate)))
 							.Append(HttpUtility.UrlEncode(NotifyFormatStrings.projectLink))
 							.Append(new StringBuilder().AppendFormat(NotifyFormatStrings.barkUrlArgs, record.ID))
 							.ToString()

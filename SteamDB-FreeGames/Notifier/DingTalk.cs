@@ -20,7 +20,7 @@ namespace SteamDB_FreeGames.Notifier {
 			_logger = logger;
 		}
 
-		public async Task SendMessage(NotifyConfig config, List<FreeGameRecord> records) {
+		public async Task SendMessage(NotifyConfig config, List<NotifyRecord> records) {
 			try {
 				_logger.LogDebug(debugSendMessage);
 
@@ -34,7 +34,7 @@ namespace SteamDB_FreeGames.Notifier {
 
 				foreach (var record in records) {
 					sb.Append(sb.Length == 0 ? record.ID : $",{record.ID}");
-					content.text.content = $"{record.ToDingTalkMessage()}{NotifyFormatStrings.projectLink}";
+					content.text.content = $"{record.ToDingTalkMessage(update: record.IsUpdate)}{NotifyFormatStrings.projectLink}";
 					data = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
 					resp = await client.PostAsync(url, data);
 					_logger.LogDebug(await resp.Content.ReadAsStringAsync());

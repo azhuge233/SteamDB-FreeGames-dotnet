@@ -20,7 +20,7 @@ namespace SteamDB_FreeGames.Notifier {
 			_logger = logger;
 		}
 
-		private MimeMessage CreateMessage(List<FreeGameRecord> pushList, string fromAddress, string toAddress) {
+		private MimeMessage CreateMessage(List<NotifyRecord> pushList, string fromAddress, string toAddress) {
 			try {
 				_logger.LogDebug(debugCreateMessage);
 
@@ -37,7 +37,7 @@ namespace SteamDB_FreeGames.Notifier {
 
 				pushList.ForEach(record => {
 					sbSubID.Append(sbSubID.Length == 0 ? record.ID : $",{record.ID}");
-					sb.AppendFormat(NotifyFormatStrings.emailBodyFormat, record.ToEmailMessage());
+					sb.AppendFormat(NotifyFormatStrings.emailBodyFormat, record.ToEmailMessage(update: record.IsUpdate));
 				});
 
 				message.Body = new TextPart("html") {
@@ -55,7 +55,7 @@ namespace SteamDB_FreeGames.Notifier {
 			}
 		}
 
-		public async Task SendMessage(NotifyConfig config, List<FreeGameRecord> records) {
+		public async Task SendMessage(NotifyConfig config, List<NotifyRecord> records) {
 			try {
 				_logger.LogDebug(debugSendMessage);
 

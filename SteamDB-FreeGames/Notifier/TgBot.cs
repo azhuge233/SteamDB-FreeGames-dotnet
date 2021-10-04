@@ -19,7 +19,7 @@ namespace SteamDB_FreeGames.Notifier {
 			_logger = logger;
 		}
 
-		public async Task SendMessage(NotifyConfig config, List<FreeGameRecord> records) {
+		public async Task SendMessage(NotifyConfig config, List<NotifyRecord> records) {
 			var sb = new StringBuilder();
 			var BotClient = new TelegramBotClient(token: config.TelegramToken);
 
@@ -28,7 +28,7 @@ namespace SteamDB_FreeGames.Notifier {
 					_logger.LogDebug($"{debugSendMessage} : {record.Name}");
 					await BotClient.SendTextMessageAsync(
 						chatId: config.TelegramChatID,
-						text: $"{record.ToTelegramMessage()}{NotifyFormatStrings.projectLinkHTML.Replace("<br>", "\n")}", 
+						text: $"{record.ToTelegramMessage(update: record.IsUpdate)}{NotifyFormatStrings.projectLinkHTML.Replace("<br>", "\n")}", 
 						parseMode: ParseMode.Html
 					);
 					sb.Append(sb.Length == 0 ? record.ID : $",{record.ID}");

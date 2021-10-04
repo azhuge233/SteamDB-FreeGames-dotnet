@@ -18,6 +18,7 @@ namespace SteamDB_FreeGames {
                     var jsonOp = servicesProvider.GetRequiredService<JsonOP>();
 
                     var config = jsonOp.LoadConfig();
+                    var oldRecord = jsonOp.LoadData();
                     servicesProvider.GetRequiredService<ConfigValidator>().CheckValid(config);
 
                     // Get page source
@@ -25,10 +26,10 @@ namespace SteamDB_FreeGames {
                     //var source = System.IO.File.ReadAllText("test.html");
 
                     // Parse page source
-                    var parseResult = servicesProvider.GetRequiredService<Parser>().HtmlParse(source, jsonOp.LoadData());
+                    var parseResult = servicesProvider.GetRequiredService<Parser>().HtmlParse(source, oldRecord);
 
                     // Notify first, then write records
-                    await servicesProvider.GetRequiredService<NotifyOP>().Notify(config, config.NotifyKeepGamesOnly ? parseResult.PushListKeepOnly : parseResult.PushListAll);
+                    await servicesProvider.GetRequiredService<NotifyOP>().Notify(config, oldRecord, config.NotifyKeepGamesOnly ? parseResult.PushListKeepOnly : parseResult.PushListAll);
 
                     // Write new records
                     jsonOp.WriteData(parseResult.Records);
