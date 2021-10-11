@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace SteamDB_FreeGames.Models {
@@ -16,8 +18,12 @@ namespace SteamDB_FreeGames.Models {
 			IsUpdate = false;
 		}
 
+		private static string RemoveSpecialCharacters(string str) {
+			return Regex.Replace(str, ParseStrings.removeSpecialCharsRegex, string.Empty);
+		}
+
 		public string ToTelegramMessage(bool update) {
-			return new StringBuilder().AppendFormat(update ? NotifyFormatStrings.telegramUpdatePushFormat : NotifyFormatStrings.telegramPushFormat, Name, ID, FreeType, Url, StartTime.ToString(), EndTime.ToString(), Regex.Replace(Name.Replace(" ", string.Empty),  "&amp;", "")).ToString();
+			return new StringBuilder().AppendFormat(update ? NotifyFormatStrings.telegramUpdatePushFormat : NotifyFormatStrings.telegramPushFormat, Name, ID, FreeType, Url, StartTime.ToString(), EndTime.ToString(), RemoveSpecialCharacters(Name)).ToString();
 		}
 
 		public string ToBarkMessage(bool update) {

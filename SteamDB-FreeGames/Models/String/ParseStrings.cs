@@ -5,6 +5,8 @@
 		public static readonly string XPathtds = ".//td";
 		#endregion
 
+		public static readonly string removeSpecialCharsRegex = @"[^0-9a-zA-Z]+";
+
 		public static readonly string SteamDBDateFormat = "yyyy-MM-dTHH:mm:ss+00:00";
 		public static readonly string keepGameString = "Keep";
 		public static readonly string hiddenAttribute = "hidden";
