@@ -31,7 +31,7 @@ Check [wiki](https://github.com/azhuge233/SteamDB-FreeGames-dotnet/wiki/Config-D
 
 To schedule the program, use cron.d in Linux(macOS) or Task Scheduler in Windows.
 
-Tested on Windows Server 2019, macOS Catalina 10.15.6.
+Tested on Windows Server 2019/2022, macOS Catalina 10.15.6.
 
 ## My Free Games Collection
 
@@ -45,3 +45,5 @@ Tested on Windows Server 2019, macOS Catalina 10.15.6.
     - [https://github.com/azhuge233/IndiegalaFreebieNotifier](https://github.com/azhuge233/IndiegalaFreebieNotifier)
 - GOG
     - [https://github.com/azhuge233/GOGGiveawayNotifier](https://github.com/azhuge233/GOGGiveawayNotifier)
+- Ubisoft
+    - [https://github.com/azhuge233/UbisoftGiveawayNotifier](https://github.com/azhuge233/UbisoftGiveawayNotifier)
