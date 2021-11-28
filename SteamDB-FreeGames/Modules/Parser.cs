@@ -41,7 +41,7 @@ namespace SteamDB_FreeGames.Modules {
 
 						var tds = each.SelectNodes(ParseStrings.XPathtds).ToList();
 
-						var newFreeGame = new FreeGameRecord {
+						var newFreeGame = tds[0].HasChildNodes ? new FreeGameRecord {
 							//start gather free game basic info
 							//SubID change to ID, SteamDB does not always provide game's SubID, somtimes AppID
 							ID = tds[1].SelectSingleNode(".//a[@href]").Attributes["href"]?.Value.Trim('/'),
@@ -51,6 +51,16 @@ namespace SteamDB_FreeGames.Modules {
 							// in case of blank start/end time
 							StartTime = tds[4].Attributes["data-time"] == null ? null : DateTime.ParseExact(tds[4].Attributes["data-time"].Value, ParseStrings.SteamDBDateFormat, System.Globalization.CultureInfo.InvariantCulture).AddHours(8),
 							EndTime = tds[5].Attributes["data-time"] == null ? null : DateTime.ParseExact(tds[5].Attributes["data-time"].Value, ParseStrings.SteamDBDateFormat, System.Globalization.CultureInfo.InvariantCulture).AddHours(8)
+						} : new FreeGameRecord {
+							//start gather free game basic info
+							//SubID change to ID, SteamDB does not always provide game's SubID, somtimes AppID
+							ID = tds[2].SelectSingleNode(".//a[@href]").Attributes["href"]?.Value.Trim('/'),
+							Name = tds[2].SelectSingleNode(".//b").InnerText,
+							FreeType = tds[4].InnerHtml.Contains(ParseStrings.keepGameString) ? ParseStrings.keepGameString : tds[4].InnerHtml,
+							Url = tds[1].SelectSingleNode(".//a[@href]").Attributes["href"].Value.Split('?')[0],
+							// in case of blank start/end time
+							StartTime = tds[5].Attributes["data-time"] == null ? null : DateTime.ParseExact(tds[5].Attributes["data-time"].Value, ParseStrings.SteamDBDateFormat, System.Globalization.CultureInfo.InvariantCulture).AddHours(8),
+							EndTime = tds[6].Attributes["data-time"] == null ? null : DateTime.ParseExact(tds[6].Attributes["data-time"].Value, ParseStrings.SteamDBDateFormat, System.Globalization.CultureInfo.InvariantCulture).AddHours(8)
 						};
 
 						_logger.LogInformation(infoGameFound, newFreeGame.Name, newFreeGame.FreeType);

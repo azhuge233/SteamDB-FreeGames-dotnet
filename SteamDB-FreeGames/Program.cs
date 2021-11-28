@@ -38,7 +38,6 @@ namespace SteamDB_FreeGames {
                 logger.Info(" - Job End -\n");
             } catch (Exception ex) {
                 logger.Error(ex.Message);
-                logger.Error($"{ex.InnerException.Message}\n\n");
             } finally {
                 LogManager.Shutdown();
             }
