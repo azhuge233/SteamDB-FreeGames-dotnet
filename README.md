@@ -1,6 +1,6 @@
 # SteamDB-FreeGames-dotnet
 
-Fetch free games info from SteamDB, send notifications through Telegram, Email, Bark, QQ, PushPlus and DingTalk.
+A CLI tool that fetches free games info from SteamDB, sends notifications through Telegram, Email, Bark, QQ, PushPlus and DingTalk.
 
 Demo Telegram Channel [@azhuge233_FreeGames](https://t.me/azhuge233_FreeGames)
 
