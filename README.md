@@ -28,6 +28,7 @@ Fill your Telegram Bot token and chat ID in config.json
 ```
 
 Check [wiki](https://github.com/azhuge233/SteamDB-FreeGames-dotnet/wiki/Config-Description) for more notification method descriptions.
+
 ### ASF Auto Claim
 
 The free games' start time that SteamDB provides used to be the actual time the free time starts, for some games you had to wait for a few hours or a few days, adding auto claim was useless, but the start time information has changed for a while(and it seems this change is permanent), now you don't have to wait to claim, so I added this function.
@@ -45,7 +46,11 @@ Set `EnableASF` to `true` to turn on auto claim, then fill your IPC address in `
 
 Auto claim uses "addlicense asf SubID/AppID" as the default addlicense command, if you have any customized prefix or ASF just simply returns "wrong command" kind of message, you may need to manually change the [command string](https://github.com/azhuge233/SteamDB-FreeGames-dotnet/blob/7c682b8078a87464af2cbb5f2efd33446386a464/SteamDB-FreeGames/Models/String/ASFStrings.cs#L5) in [Models/String/ASFStrings.cs](https://github.com/azhuge233/SteamDB-FreeGames-dotnet/blob/7c682b8078a87464af2cbb5f2efd33446386a464/SteamDB-FreeGames/Models/String/ASFStrings.cs).
 
-To schedule the program, use cron.d in Linux(macOS) or Task Scheduler in Windows.
+Check [wiki](https://github.com/azhuge233/SteamDB-FreeGames-dotnet/wiki/Config-Description) for more ASF related config variables descriptions.
+
+### Repeatedly running
+
+The program will not add while/for loop, it's a scraper. To schedule the program, use cron.d in Linux(macOS) or Task Scheduler in Windows.
 
 Tested on Windows Server 2019/2022, macOS Catalina 10.15.6.
 
