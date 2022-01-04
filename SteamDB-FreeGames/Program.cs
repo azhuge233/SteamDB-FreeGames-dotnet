@@ -16,6 +16,7 @@ namespace SteamDB_FreeGames {
 
                 using (servicesProvider as IDisposable) {
                     var jsonOp = servicesProvider.GetRequiredService<JsonOP>();
+                    var notifyOP = servicesProvider.GetRequiredService<NotifyOP>();
 
                     var config = jsonOp.LoadConfig();
                     var oldRecord = jsonOp.LoadData();
@@ -29,10 +30,16 @@ namespace SteamDB_FreeGames {
                     var parseResult = servicesProvider.GetRequiredService<Parser>().HtmlParse(source, oldRecord);
 
                     // Notify first, then write records
-                    await servicesProvider.GetRequiredService<NotifyOP>().Notify(config, oldRecord, config.NotifyKeepGamesOnly ? parseResult.PushListKeepOnly : parseResult.PushListAll);
+                    await notifyOP.Notify(config, oldRecord, config.NotifyKeepGamesOnly ? parseResult.PushListKeepOnly : parseResult.PushListAll);
 
                     // Write new records
                     jsonOp.WriteData(parseResult.Records);
+
+                    // Add free games through ASF, returns ASF result string
+                    var addlicenseResult = await servicesProvider.GetRequiredService<ASFOP>().Addlicense(config, config.AddKeepGamesOnly ? parseResult.PushListKeepOnly : parseResult.PushListAll);
+
+                    // Send ASF result
+                    await notifyOP.Notify(config, addlicenseResult);
                 }
 
                 logger.Info(" - Job End -\n");

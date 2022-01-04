@@ -26,6 +26,12 @@
   "EnableDingTalk": false,
   "DingTalkBotToken": "",
 
+  "EnableASF":  false,
+  "ASFIPCUrl": "",
+  "ASFIPCPassword": "",
+  "NotifyASFResult": false,
+  "AddKeepGamesOnly": false,
+
   "EnableHeadless": true,
   "NotifyKeepGamesOnly": true,
   "TimeOutMilliSecond": 30000

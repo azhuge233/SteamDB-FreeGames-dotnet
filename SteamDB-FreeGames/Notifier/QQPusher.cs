@@ -13,6 +13,7 @@ namespace SteamDB_FreeGames.Notifier {
 
 		#region debug strings
 		private readonly string debugSendMessage = "Send notifications to QQ";
+		private readonly string debugSendMessageASF = "Send ASF result to QQ";
 		#endregion
 
 		public QQPusher(ILogger<QQPusher> logger) {
@@ -50,6 +51,31 @@ namespace SteamDB_FreeGames.Notifier {
 				_logger.LogDebug(resp.Text);
 
 				_logger.LogDebug($"Done: {debugSendMessage}");
+			} catch (Exception) {
+				_logger.LogError($"Error: {debugSendMessage}");
+				throw;
+			} finally {
+				Dispose();
+			}
+		}
+
+		public async Task SendMessage(NotifyConfig config, string asfResult) {
+			try {
+				_logger.LogDebug(debugSendMessageASF);
+
+				string url = new StringBuilder().AppendFormat(NotifyFormatStrings.qqUrlFormat, config.QQAddress, config.QQPort, config.ToQQID).ToString();
+				var webGet = new HtmlWeb();
+				var resp = new HtmlDocument();
+
+				resp = await webGet.LoadFromWebAsync(
+						new StringBuilder()
+							.Append(url)
+							.Append(HttpUtility.UrlEncode(asfResult))
+							.ToString()
+					);
+				_logger.LogDebug(resp.Text);
+
+				_logger.LogDebug($"Done: {debugSendMessageASF}");
 			} catch (Exception) {
 				_logger.LogError($"Error: {debugSendMessage}");
 				throw;

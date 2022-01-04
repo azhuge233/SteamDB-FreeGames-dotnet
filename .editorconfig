@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CA2254: 模板应为静态表达式
+dotnet_diagnostic.CA2254.severity = none

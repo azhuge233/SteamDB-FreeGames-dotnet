@@ -98,6 +98,62 @@ namespace SteamDB_FreeGames.Modules {
 				_logger.LogError($"Error: {debugNotify}");
 				throw;
 			} finally {
+				//Dispose();
+			}
+		}
+
+		public async Task Notify(ASFConfig config, string asfResult) {
+			if (string.IsNullOrEmpty(asfResult)) {
+				_logger.LogInformation(debugNoNewNotifications);
+				return;
+			}
+
+			try {
+				_logger.LogDebug(debugNotify);
+
+				if (config.NotifyASFResult) {
+					// Telegram notifications
+					if (config.EnableTelegram) {
+						_logger.LogInformation(debugEnabledFormat, "Telegram");
+						await services.GetRequiredService<TgBot>().SendMessage(config, asfResult);
+					} else _logger.LogInformation(debugDisabledFormat, "Telegram");
+
+					// Bark notifications
+					if (config.EnableBark) {
+						_logger.LogInformation(debugEnabledFormat, "Bark");
+						await services.GetRequiredService<Barker>().SendMessage(config, asfResult);
+					} else _logger.LogInformation(debugDisabledFormat, "Bark");
+
+					// QQ notifications
+					if (config.EnableQQ) {
+						_logger.LogInformation(debugEnabledFormat, "QQ");
+						await services.GetRequiredService<QQPusher>().SendMessage(config, asfResult);
+					} else _logger.LogInformation(debugDisabledFormat, "QQ");
+
+					// PushPlus notifications
+					if (config.EnablePushPlus) {
+						_logger.LogInformation(debugEnabledFormat, "PushPlus");
+						await services.GetRequiredService<PushPlus>().SendMessage(config, asfResult);
+					} else _logger.LogInformation(debugDisabledFormat, "PushPlus");
+
+					// DingTalk notifications
+					if (config.EnableDingTalk) {
+						_logger.LogInformation(debugEnabledFormat, "DingTalk");
+						await services.GetRequiredService<DingTalk>().SendMessage(config, asfResult);
+					} else _logger.LogInformation(debugDisabledFormat, "DingTalk");
+
+					// Email notifications
+					if (config.EnableEmail) {
+						_logger.LogInformation(debugEnabledFormat, "Email");
+						await services.GetRequiredService<Email>().SendMessage(config, asfResult);
+					} else _logger.LogInformation(debugDisabledFormat, "Email");
+				} else _logger.LogDebug(debugDisabledFormat, "ASF");
+
+				_logger.LogDebug($"Done: {debugNotify}");
+			} catch (Exception) {
+				_logger.LogError($"Error: {debugNotify}");
+				throw;
+			} finally {
 				Dispose();
 			}
 		}

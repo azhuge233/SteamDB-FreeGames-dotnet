@@ -18,6 +18,7 @@ namespace SteamDB_FreeGames.Modules {
                .AddTransient<Scraper>()
                .AddTransient<Parser>()          
                .AddTransient<NotifyOP>()
+               .AddTransient<ASFOP>()
                .AddTransient<Barker>()
                .AddTransient<TgBot>()
                .AddTransient<Email>()

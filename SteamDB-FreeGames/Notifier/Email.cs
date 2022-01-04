@@ -14,6 +14,8 @@ namespace SteamDB_FreeGames.Notifier {
 		#region debug strings
 		private readonly string debugSendMessage = "Send notification to Email";
 		private readonly string debugCreateMessage = "Create notification message";
+		private readonly string debugSendMessageASF = "Send ASF result to Email";
+		private readonly string debugCreateMessageASF = "Create ASf result message";
 		#endregion
 
 		public Email(ILogger<Email> logger) {
@@ -54,6 +56,29 @@ namespace SteamDB_FreeGames.Notifier {
 				throw;
 			}
 		}
+		private MimeMessage CreateMessage(string asfResult, string fromAddress, string toAddress) {
+			try {
+				_logger.LogDebug(debugSendMessageASF);
+
+				var message = new MimeMessage();
+
+				message.From.Add(new MailboxAddress("SteamDB-FreeGames-ASF-Result", fromAddress));
+				message.To.Add(new MailboxAddress("Receiver", toAddress));
+
+				message.Subject = NotifyFormatStrings.emailASFTitleFormat;
+
+				message.Body = new TextPart("html") {
+					Text = asfResult.Replace("<", "&lt;").Replace(">", "&gt;")
+				};
+
+				_logger.LogDebug($"Done: {debugSendMessageASF}");
+				return message;
+			} catch (Exception) {
+				_logger.LogError($"Error: {debugSendMessageASF}");
+				throw;
+			}
+		}
+
 
 		public async Task SendMessage(NotifyConfig config, List<NotifyRecord> records) {
 			try {
@@ -74,6 +99,27 @@ namespace SteamDB_FreeGames.Notifier {
 			} finally {
 				Dispose();
 			}	
+		}
+
+		public async Task SendMessage(NotifyConfig config, string asfResult) {
+			try {
+				_logger.LogDebug(debugCreateMessageASF);
+
+				var message = CreateMessage(asfResult, config.FromEmailAddress, config.ToEmailAddress);
+
+				using var client = new SmtpClient();
+				client.Connect(config.SMTPServer, config.SMTPPort, true);
+				client.Authenticate(config.AuthAccount, config.AuthPassword);
+				await client.SendAsync(message);
+				client.Disconnect(true);
+
+				_logger.LogDebug($"Done: {debugCreateMessageASF}");
+			} catch (Exception) {
+				_logger.LogError($"Error: {debugCreateMessageASF}");
+				throw;
+			} finally {
+				Dispose();
+			}
 		}
 
 		public void Dispose() {

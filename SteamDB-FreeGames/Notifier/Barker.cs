@@ -13,6 +13,7 @@ namespace SteamDB_FreeGames.Notifier {
 
 		#region debug strings
 		private readonly string debugSendMessage = "Send notification to Bark";
+		private readonly string debugSendMessageASF = "Send ASF result to Bark";
 		#endregion
 
 		public Barker(ILogger<Barker> logger) {
@@ -54,6 +55,32 @@ namespace SteamDB_FreeGames.Notifier {
 				_logger.LogDebug($"Done: {debugSendMessage}");
 			} catch (Exception) {
 				_logger.LogDebug($"Error: {debugSendMessage}");
+				throw;
+			} finally {
+				Dispose();
+			}
+		}
+
+		public async Task SendMessage(NotifyConfig config, string asfRecord) {
+			try {
+				_logger.LogDebug(debugSendMessageASF);
+				string url = new StringBuilder().AppendFormat(NotifyFormatStrings.barkUrlFormat, config.BarkAddress, config.BarkToken).ToString();
+
+				var webGet = new HtmlWeb();
+				var resp = new HtmlDocument();
+
+				resp = await webGet.LoadFromWebAsync(
+					new StringBuilder()
+						.Append(url)
+						.Append(NotifyFormatStrings.barkUrlASFTitle)
+						.Append(HttpUtility.UrlEncode(asfRecord))
+						.ToString()
+				);
+				_logger.LogDebug(resp.Text);
+
+				_logger.LogDebug($"Done: {debugSendMessageASF}");
+			} catch (Exception) {
+				_logger.LogDebug($"Error: {debugSendMessageASF}");
 				throw;
 			} finally {
 				Dispose();

@@ -70,6 +70,12 @@ namespace SteamDB_FreeGames.Modules {
 						throw new Exception(message: "No DingTalk token provided!");
 				}
 
+				//ASF
+				if (config.EnableASF) {
+					if (string.IsNullOrEmpty(config.ASFIPCUrl))
+						throw new Exception(message: "No ASF IPC Url provided!");
+				}
+
 				_logger.LogDebug($"Done: {debugCheckValid}");
 			} catch (Exception) {
 				_logger.LogError($"Error: {debugCheckValid}");

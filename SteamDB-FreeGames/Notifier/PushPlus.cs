@@ -14,6 +14,7 @@ namespace SteamDB_FreeGames.Notifier {
 		#region debug strings
 		private readonly string debugSendMessage = "Send notification to PushPlus";
 		private readonly string debugCreateMessage = "Create notification message";
+		private readonly string debugSendMessageASF = "Send ASF result to PushPlus";
 		#endregion
 
 		public PushPlus(ILogger<PushPlus> logger) {
@@ -61,6 +62,30 @@ namespace SteamDB_FreeGames.Notifier {
 				_logger.LogDebug($"Done: {debugSendMessage}");
 			} catch (Exception) {
 				_logger.LogError($"Error: {debugSendMessage}");
+				throw;
+			} finally {
+				Dispose();
+			}
+		}
+
+		public async Task SendMessage(NotifyConfig config, string asfResult) {
+			try {
+				_logger.LogDebug(debugSendMessageASF);
+
+				var title = HttpUtility.UrlEncode(NotifyFormatStrings.pushPlusASFTitleFormat);
+				var url = new StringBuilder().AppendFormat(NotifyFormatStrings.pushPlusUrlFormat, config.PushPlusToken, title);
+
+				var resp = await new HtmlWeb().LoadFromWebAsync(
+					new StringBuilder()
+						.Append(url)
+						.Append(HttpUtility.UrlEncode(asfResult.Replace("<", "&lt;").Replace(">", "&gt;")))
+						.ToString()
+				);
+				_logger.LogDebug(resp.Text);
+
+				_logger.LogDebug($"Done: {debugSendMessageASF}");
+			} catch (Exception) {
+				_logger.LogError($"Error: {debugSendMessageASF}");
 				throw;
 			} finally {
 				Dispose();

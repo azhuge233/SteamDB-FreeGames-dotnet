@@ -13,6 +13,7 @@ namespace SteamDB_FreeGames.Notifier {
 
 		#region debug strings
 		private readonly string debugSendMessage = "Send notification to Telegram";
+		private readonly string debugSendMessageASF = "Send ASF result to Telegram";
 		#endregion
 
 		public TgBot(ILogger<TgBot> logger) {
@@ -43,6 +44,26 @@ namespace SteamDB_FreeGames.Notifier {
 				_logger.LogDebug($"Done: {debugSendMessage}");
 			} catch (Exception) {
 				_logger.LogError($"Error: {debugSendMessage}");
+				throw;
+			} finally {
+				Dispose();
+			}
+		}
+
+		public async Task SendMessage(NotifyConfig config, string asfResult) {
+			var BotClient = new TelegramBotClient(token: config.TelegramToken);
+
+			try {
+				_logger.LogDebug(debugSendMessageASF);
+				await BotClient.SendTextMessageAsync(
+					chatId: config.TelegramChatID,
+					text: $"{asfResult.Replace("<", "&lt;").Replace(">", "&gt;")}",
+					parseMode: ParseMode.Html
+				);
+
+				_logger.LogDebug($"Done: {debugSendMessageASF}");
+			} catch (Exception) {
+				_logger.LogError($"Error: {debugSendMessageASF}");
 				throw;
 			} finally {
 				Dispose();

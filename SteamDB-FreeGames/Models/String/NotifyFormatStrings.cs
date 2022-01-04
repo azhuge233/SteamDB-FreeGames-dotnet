@@ -95,6 +95,7 @@
 		#region url, title format string
 		public static readonly string barkUrlFormat = "{0}/{1}/";
 		public static readonly string barkUrlTitle = "SteamDB-FreeGames/";
+		public static readonly string barkUrlASFTitle = "SteamDB-FreeGames-ASF-Result/";
 		public static readonly string barkUrlArgs =
 			"?group=steamdbfreegames" +
 			"&copy={0}" +
@@ -102,11 +103,13 @@
 			"&sound=calypso";
 
 		public static readonly string emailTitleFormat = "{0} new free game(s) - SteamDB-FreeGames";
+		public static readonly string emailASFTitleFormat = "SteamDB-FreeGames-ASF-Result";
 		public static readonly string emailBodyFormat = "<br>{0}";
 
 		public static readonly string qqUrlFormat = "http://{0}:{1}/send_private_msg?user_id={2}&message=";
 
 		public static readonly string pushPlusTitleFormat = "{0} new free game(s) - SteamDB-FreeGames";
+		public static readonly string pushPlusASFTitleFormat = "SteamDB-FreeGames-ASF-Result";
 		public static readonly string pushPlusBodyFormat = "<br>{0}";
 		public static readonly string pushPlusUrlFormat = "http://www.pushplus.plus/send?token={0}&template=html&title={1}&content=";
 
