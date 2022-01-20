@@ -12,12 +12,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.39" />
-    <PackageReference Include="MailKit" Version="3.0.0" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.40" />
+    <PackageReference Include="MailKit" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
     <PackageReference Include="Microsoft.Playwright" Version="1.17.3" />
-    <PackageReference Include="MimeKit" Version="3.0.0" />
+    <PackageReference Include="MimeKit" Version="3.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.7.4" />
     <PackageReference Include="Telegram.Bot" Version="17.0.0" />
