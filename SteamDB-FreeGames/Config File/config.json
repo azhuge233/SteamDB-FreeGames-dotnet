@@ -26,6 +26,9 @@
   "EnableDingTalk": false,
   "DingTalkBotToken": "",
 
+  "EnablePushDeer": false,
+  "PushDeerToken": "",
+
   "EnableASF":  false,
   "ASFIPCUrl": "",
   "ASFIPCPassword": "",

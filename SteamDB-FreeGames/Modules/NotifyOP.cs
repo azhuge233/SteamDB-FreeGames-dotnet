@@ -21,7 +21,6 @@ namespace SteamDB_FreeGames.Modules {
 		private readonly string debugIsNotUpdateRecord = "{0} NOT exist in previous record";
 		#endregion
 
-
 		public NotifyOP(ILogger<NotifyOP> logger) {
 			_logger = logger;
 		}
@@ -87,6 +86,12 @@ namespace SteamDB_FreeGames.Modules {
 					await services.GetRequiredService<DingTalk>().SendMessage(config, pushListFinal);
 				} else _logger.LogInformation(debugDisabledFormat, "DingTalk");
 
+				// PushDeer notifications
+				if (config.EnablePushDeer) {
+					_logger.LogInformation(debugEnabledFormat, "PushDeer");
+					await services.GetRequiredService<PushDeer>().SendMessage(config, pushListFinal);
+				} else _logger.LogInformation(debugDisabledFormat, "PushDeer");
+
 				// Email notifications
 				if (config.EnableEmail) {
 					_logger.LogInformation(debugEnabledFormat, "Email");
@@ -141,6 +146,12 @@ namespace SteamDB_FreeGames.Modules {
 						_logger.LogInformation(debugEnabledFormat, "DingTalk");
 						await services.GetRequiredService<DingTalk>().SendMessage(config, asfResult);
 					} else _logger.LogInformation(debugDisabledFormat, "DingTalk");
+
+					// PushDeer notifications
+					if (config.EnablePushDeer) {
+						_logger.LogInformation(debugEnabledFormat, "PushDeer");
+						await services.GetRequiredService<PushDeer>().SendMessage(config, asfResult);
+					} else _logger.LogInformation(debugDisabledFormat, "PushDeer");
 
 					// Email notifications
 					if (config.EnableEmail) {

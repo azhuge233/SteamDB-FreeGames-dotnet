@@ -44,6 +44,13 @@
 			"链接: {3}\n" +
 			"开始时间: {4}\n" +
 			"结束时间: {5}";
+		public static readonly string pushDeerPushFormat =
+			"{0}\n" +
+			"Sub/App ID: {1}\n" +
+			"免费类型: {2}\n" +
+			"链接: {3}\n" +
+			"开始时间: {4}\n" +
+			"结束时间: {5}";
 		#endregion
 
 		#region record ToMessage(update = true) string
@@ -90,6 +97,13 @@
 			"链接: {3}\n" +
 			"开始时间: {4}\n" +
 			"结束时间: {5}";
+		public static readonly string pushDeerUpdatePushFormat =
+			"{0} 信息更新\n" +
+			"Sub/App ID: {1}\n" +
+			"免费类型: {2}\n" +
+			"链接: {3}\n" +
+			"开始时间: {4}\n" +
+			"结束时间: {5}";
 		#endregion
 
 		#region url, title format string
@@ -114,6 +128,8 @@
 		public static readonly string pushPlusUrlFormat = "http://www.pushplus.plus/send?token={0}&template=html&title={1}&content=";
 
 		public static readonly string dingTalkUrlFormat = "https://oapi.dingtalk.com/robot/send?access_token={0}";
+
+		public static readonly string pushDeerUrlFormat = "https://api2.pushdeer.com/message/push?pushkey={0}&&text={1}";
 		#endregion
 
 
