@@ -21,7 +21,7 @@ dotnet publish -c Release -o /your/path/here -r [win10-x64/osx-x64/linux-x64] --
 
 ## Usage
 
-Fill your Telegram Bot token and chat ID in config.json
+Set your Telegram Bot token and chat ID in config.json
 
 ```json
 {
