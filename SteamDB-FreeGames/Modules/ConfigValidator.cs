@@ -70,6 +70,12 @@ namespace SteamDB_FreeGames.Modules {
 						throw new Exception(message: "No DingTalk token provided!");
 				}
 
+				//PushDeer
+				if (config.EnablePushDeer) {
+					if (string.IsNullOrEmpty(config.PushDeerToken))
+						throw new Exception(message: "No PushDeer token provided!");
+				}
+
 				//ASF
 				if (config.EnableASF) {
 					if (string.IsNullOrEmpty(config.ASFIPCUrl))

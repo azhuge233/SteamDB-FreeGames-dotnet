@@ -18,6 +18,7 @@ namespace SteamDB_FreeGames.Modules {
 		private readonly string debugGenerateSubIDString = "GenerateSubIDString";
 		private readonly string infoAddlicenseResult = "Addlicense result: \n";
 		private readonly string infoNoRecords = "No new record, skipping addlicense";
+		private readonly string infoASFDisabled = "ASF disabled, skipping";
 		#endregion
 
 		public ASFOP(ILogger<ASFOP> logger) {
@@ -40,6 +41,11 @@ namespace SteamDB_FreeGames.Modules {
 		}
 
 		public async Task<string> Addlicense(Config config, List<FreeGameRecord> gameList) {
+			if (!config.EnableASF) {
+				_logger.LogInformation(infoASFDisabled);
+				return string.Empty;
+			}
+
 			if (gameList.Count == 0) {
 				_logger.LogInformation(infoNoRecords);
 				return string.Empty;

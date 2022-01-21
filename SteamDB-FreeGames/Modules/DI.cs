@@ -25,6 +25,7 @@ namespace SteamDB_FreeGames.Modules {
                .AddTransient<QQPusher>()
                .AddTransient<PushPlus>()
                .AddTransient<DingTalk>()
+               .AddTransient<PushDeer>()
                .AddLogging(loggingBuilder => {
                    // configure Logging with NLog
                    loggingBuilder.ClearProviders();
@@ -42,6 +43,7 @@ namespace SteamDB_FreeGames.Modules {
                .AddTransient<QQPusher>()
                .AddTransient<PushPlus>()
                .AddTransient<DingTalk>()
+               .AddTransient<PushDeer>()
                .AddLogging(loggingBuilder => {
                    // configure Logging with NLog
                    loggingBuilder.ClearProviders();

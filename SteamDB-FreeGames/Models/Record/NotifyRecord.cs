@@ -45,5 +45,9 @@ namespace SteamDB_FreeGames.Models {
 		public string ToDingTalkMessage(bool update) {
 			return new StringBuilder().AppendFormat(update ? NotifyFormatStrings.dingTalkUpdatePushFormat : NotifyFormatStrings.dingTalkPushFormat, Name, ID, FreeType, Url, StartTime.ToString(), EndTime.ToString()).ToString();
 		}
+
+		public string ToPushDeerMessage(bool update) {
+			return new StringBuilder().AppendFormat(update ? NotifyFormatStrings.pushDeerUpdatePushFormat : NotifyFormatStrings.pushDeerPushFormat, Name, ID, FreeType, Url, StartTime.ToString(), EndTime.ToString()).ToString();
+		}
 	}
 }
