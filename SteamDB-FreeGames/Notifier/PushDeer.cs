@@ -9,7 +9,7 @@ using SteamDB_FreeGames.Models;
 
 namespace SteamDB_FreeGames.Notifier {
 	internal class PushDeer: INotifiable {
-		private ILogger<PushDeer> _logger;
+		private readonly ILogger<PushDeer> _logger;
 
 		#region debug strings
 		private readonly string debugSendMessage = "Send notification to PushDeer";
@@ -35,6 +35,7 @@ namespace SteamDB_FreeGames.Notifier {
 						.AppendFormat(NotifyFormatStrings.pushDeerUrlFormat,
 									config.PushDeerToken,
 									HttpUtility.UrlEncode(record.ToPushDeerMessage(update: record.IsUpdate)))
+						.Append(HttpUtility.UrlEncode(NotifyFormatStrings.projectLink))
 						.ToString()
 					);
 					_logger.LogDebug(resp.Text);
