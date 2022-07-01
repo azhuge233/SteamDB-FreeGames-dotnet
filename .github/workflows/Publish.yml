@@ -7,7 +7,7 @@ on:
 jobs:
   publish:
     name: Publish the app
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     permissions:
       contents: write
 
@@ -21,23 +21,18 @@ jobs:
         dotnet-version: 6.0.x
     
     - name: Publish
+      shell: pwsh
       run: |
-        dotnet restore
-        dotnet publish -c release -r win-x64 -o bin/release/win-x64 --sc
-      
-    - name: Install Zip
-      uses: montudor/action-zip@v1
-      
-    - name: Create Zip
-      run: |
-        zip -qq -r SDB-win-x64.zip win-x64/*
-      working-directory: bin/release
+        Set-Location "$env:GITHUB_WORKSPACE"
+        dotnet build
+        dotnet publish -c release -r win-x64 -o "Release\win-x64" --sc --nologo
+        Compress-Archive -Path "Release\win-x64\" -DestinationPath "SDB-win-x64.zip"
       
     - name: Upload zip
       uses: actions/upload-artifact@v3
       with:
         name: My Artifact
-        path: bin/release/*.zip
+        path: ./*.zip
         if-no-files-found: warn
         
     - name: Create Release
@@ -46,4 +41,4 @@ jobs:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         automatic_release_tag: "latest"
         prerelease: false
-        files: bin/release/*.zip
+        files: ./*.zip
