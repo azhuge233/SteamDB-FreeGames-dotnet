@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SteamDB_FreeGames.Models;
+using SteamDB_FreeGames.Models.PostContent;
 
 namespace SteamDB_FreeGames.Notifier {
 	class DingTalk: INotifiable {
@@ -33,13 +34,13 @@ namespace SteamDB_FreeGames.Notifier {
 
 				foreach (var record in records) {
 					sb.Append(sb.Length == 0 ? record.ID : $",{record.ID}");
-					content.text.content = $"{record.ToDingTalkMessage(update: record.IsUpdate)}{NotifyFormatStrings.projectLink}";
+					content.Text.Content_ = $"{record.ToDingTalkMessage(update: record.IsUpdate)}{NotifyFormatStrings.projectLink}";
 					data = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
 					resp = await client.PostAsync(url, data);
 					_logger.LogDebug(await resp.Content.ReadAsStringAsync());
 				}
 
-				content.text.content = sb.ToString();
+				content.Text.Content_ = sb.ToString();
 				data = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
 				resp = await client.PostAsync(url, data);
 				_logger.LogDebug(await resp.Content.ReadAsStringAsync());
@@ -64,7 +65,7 @@ namespace SteamDB_FreeGames.Notifier {
 				var data = new StringContent("");
 				var resp = new HttpResponseMessage();
 
-				content.text.content = $"{asfResult}";
+				content.Text.Content_ = $"{asfResult}";
 				data = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
 				resp = await client.PostAsync(url, data);
 				_logger.LogDebug(await resp.Content.ReadAsStringAsync());

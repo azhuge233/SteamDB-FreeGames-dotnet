@@ -29,6 +29,9 @@
   "EnablePushDeer": false,
   "PushDeerToken": "",
 
+  "EnableDiscord": false,
+  "DiscordWebhookURL": "",
+
   "EnableASF":  false,
   "ASFIPCUrl": "",
   "ASFIPCPassword": "",

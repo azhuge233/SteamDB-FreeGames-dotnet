@@ -51,6 +51,11 @@
 			"链接: {3}\n" +
 			"开始时间: {4}\n" +
 			"结束时间: {5}";
+		public static readonly string discordPushFormat =
+			"Sub/App ID: {0}\n" +
+			"免费类型: {1}\n" +
+			"开始时间: {2}\n" +
+			"结束时间: {3}\n\n";
 		#endregion
 
 		#region record ToMessage(update = true) string
@@ -104,6 +109,12 @@
 			"链接: {3}\n" +
 			"开始时间: {4}\n" +
 			"结束时间: {5}";
+		public static readonly string discordUpdatePushFormat =
+			"信息更新\n\n" +
+			"Sub/App ID: {0}\n" +
+			"免费类型: {1}\n" +
+			"开始时间: {2}\n" +
+			"结束时间: {3}\n\n";
 		#endregion
 
 		#region url, title format string

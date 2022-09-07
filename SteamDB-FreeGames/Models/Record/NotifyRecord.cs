@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
 
 namespace SteamDB_FreeGames.Models {
@@ -48,6 +46,10 @@ namespace SteamDB_FreeGames.Models {
 
 		public string ToPushDeerMessage(bool update) {
 			return new StringBuilder().AppendFormat(update ? NotifyFormatStrings.pushDeerUpdatePushFormat : NotifyFormatStrings.pushDeerPushFormat, Name, ID, FreeType, Url, StartTime.ToString(), EndTime.ToString()).ToString();
+		}
+
+		public string ToDiscordMessage(bool update) {
+			return new StringBuilder().AppendFormat(update ? NotifyFormatStrings.discordUpdatePushFormat : NotifyFormatStrings.discordPushFormat, ID, FreeType, StartTime.ToString(), EndTime.ToString()).ToString();
 		}
 	}
 }

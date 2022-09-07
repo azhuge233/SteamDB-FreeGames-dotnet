@@ -92,6 +92,12 @@ namespace SteamDB_FreeGames.Modules {
 					await services.GetRequiredService<PushDeer>().SendMessage(config, pushListFinal);
 				} else _logger.LogInformation(debugDisabledFormat, "PushDeer");
 
+				// Discord notifications
+				if (config.EnableDiscord) {
+					_logger.LogInformation(debugEnabledFormat, "Discord");
+					await services.GetRequiredService<Discord>().SendMessage(config, pushListFinal);
+				} else _logger.LogInformation(debugDisabledFormat, "Discord");
+
 				// Email notifications
 				if (config.EnableEmail) {
 					_logger.LogInformation(debugEnabledFormat, "Email");
@@ -152,6 +158,12 @@ namespace SteamDB_FreeGames.Modules {
 						_logger.LogInformation(debugEnabledFormat, "PushDeer");
 						await services.GetRequiredService<PushDeer>().SendMessage(config, asfResult);
 					} else _logger.LogInformation(debugDisabledFormat, "PushDeer");
+
+					// Discord notifications
+					if (config.EnableDiscord) {
+						_logger.LogInformation(debugEnabledFormat, "Discord");
+						await services.GetRequiredService<Discord>().SendMessage(config, asfResult);
+					} else _logger.LogInformation(debugDisabledFormat, "Discord");
 
 					// Email notifications
 					if (config.EnableEmail) {

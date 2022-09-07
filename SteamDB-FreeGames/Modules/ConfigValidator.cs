@@ -76,6 +76,11 @@ namespace SteamDB_FreeGames.Modules {
 						throw new Exception(message: "No PushDeer token provided!");
 				}
 
+				if (config.EnableDiscord) {
+					if (string.IsNullOrEmpty(config.DiscordWebhookURL))
+						throw new Exception(message: "No Discord Webhook provided!");
+				}
+
 				//ASF
 				if (config.EnableASF) {
 					if (string.IsNullOrEmpty(config.ASFIPCUrl))
