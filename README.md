@@ -34,8 +34,6 @@ Check [wiki](https://github.com/azhuge233/SteamDB-FreeGames-dotnet/wiki/Config-D
 
 ### ASF Auto Claim
 
-The free games' start time that SteamDB provides used to be the actual time the free time starts, for some games you had to wait for a few hours or a few days, adding auto claim was useless, but the start time information has changed for a while(and it seems this change is permanent), now you don't have to wait to claim, so I added this function.
-
 To use auto claim, you have to set up ASF IPC server first, you can find the instructions [here](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC).
 
 Set `EnableASF` to `true` to turn on auto claim, then fill your IPC address in `ASFIPCUrl`
