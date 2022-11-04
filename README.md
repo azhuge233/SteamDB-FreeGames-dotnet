@@ -1,5 +1,7 @@
 # SteamDB-FreeGames-dotnet
 
+## No longer maintained, head [here](https://github.com/azhuge233/SteamDB-FreeGames-dotnet/wiki/No-longer-maintained) for more information.
+
 A CLI tool that
  - Fetches free games info from SteamDB
  - Sends notifications through Telegram, Email, Bark, QQ, PushPlus, DingTalk, PushDeer and Discord
