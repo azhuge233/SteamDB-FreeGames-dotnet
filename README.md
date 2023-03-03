@@ -1,5 +1,8 @@
 # SteamDB-FreeGames-dotnet
 
+### Update: 
+I've already found a simple, no browser extensions reqired solution to solve the captcha, it's been runnning for months with no critical error, but I'm still not planning to update this repo.
+
 ## No longer maintained, head [here](https://github.com/azhuge233/SteamDB-FreeGames-dotnet/wiki/No-longer-maintained) for more information.
 
 A CLI tool that
